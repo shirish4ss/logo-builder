@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: false, error: "Payment failed" }, { status: 400 });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    return NextResponse.json({ success: false, error: error instanceof Error ? error.message : "Payment failed" }, { status: 500 });
   }
 }

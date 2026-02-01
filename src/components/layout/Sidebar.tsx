@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { LayoutDashboard, PenTool, Briefcase, Share2, Settings, User } from "lucide-react";
 
 const menuItems = [
@@ -11,6 +14,9 @@ const menuItems = [
 ];
 
 export const Sidebar = () => {
+  const { data: session } = useSession();
+  const isAdmin = (session?.user as { role?: string })?.role === "ADMIN";
+
   return (
     <div className="w-64 bg-white h-screen border-r border-gray-200 flex flex-col">
       <div className="p-6">
@@ -28,15 +34,17 @@ export const Sidebar = () => {
           </Link>
         ))}
       </nav>
-      <div className="p-4 border-t border-gray-200">
-        <Link
-          href="/admin"
-          className="flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
-        >
-          <User size={20} />
-          <span>Admin Panel</span>
-        </Link>
-      </div>
+      {isAdmin && (
+        <div className="p-4 border-t border-gray-200">
+          <Link
+            href="/admin"
+            className="flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+          >
+            <User size={20} />
+            <span>Admin Panel</span>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

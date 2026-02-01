@@ -23,7 +23,7 @@ export default function Home() {
             Powered by AI in Seconds.
           </h2>
           <p className="text-xl text-gray-500 mb-10 max-w-2xl mx-auto">
-            The world's most advanced AI-powered logo designer. From business details to a complete branding kit, all in one place.
+            The world&apos;s most advanced AI-powered logo designer. From business details to a complete branding kit, all in one place.
           </p>
           <div className="flex justify-center space-x-4">
             <Link href="/register">

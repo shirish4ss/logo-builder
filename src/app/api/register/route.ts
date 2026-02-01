@@ -20,11 +20,15 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const userCount = await prisma.user.count();
+    const role = userCount === 0 ? "ADMIN" : "USER";
+
     const user = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
+        role,
       },
     });
 
@@ -32,7 +36,7 @@ export async function POST(req: Request) {
       status: 201,
       headers: { "Content-Type": "application/json" },
     });
-  } catch (error: any) {
-    return new Response(error.message, { status: 500 });
+  } catch (error: unknown) {
+    return new Response(error instanceof Error ? error.message : "Registration failed", { status: 500 });
   }
 }

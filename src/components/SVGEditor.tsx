@@ -9,9 +9,10 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
   const [fillColor, setFillColor] = useState("#3b82f6");
 
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFillColor(e.target.value);
-    // Simple regex to change the fill of the first circle/path for demo
-    const newSvg = svgContent.replace(/fill="[^"]*"/, `fill="${e.target.value}"`);
+    const newColor = e.target.value;
+    setFillColor(newColor);
+    // Improved regex to change all fill attributes globally in the SVG
+    const newSvg = svgContent.replace(/fill="[^"]*"/g, `fill="${newColor}"`);
     setSvgContent(newSvg);
   };
 
@@ -19,7 +20,11 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex">
       {/* Canvas */}
       <div className="flex-1 bg-gray-50 p-10 flex items-center justify-center min-h-[400px]">
-        {/* Note: In production, use dompurify to sanitize SVG content before rendering */}
+        {/*
+          SECURITY NOTE: In a production environment, you MUST sanitize the SVG content
+          using a library like 'dompurify' before using dangerouslySetInnerHTML.
+          This prevents potential XSS attacks from malicious SVG files.
+        */}
         <div
           className="w-64 h-64 bg-white shadow-xl rounded-xl flex items-center justify-center"
           dangerouslySetInnerHTML={{ __html: svgContent }}

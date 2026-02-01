@@ -69,7 +69,7 @@ export default function TeamWorkspacePage() {
               <div className="space-y-3">
                  <div className="text-xs border-l-2 border-blue-600 pl-3 py-1">
                     <p className="font-bold">Sarah Smith</p>
-                    <p className="text-gray-600">"Make this blue darker to match the guidelines."</p>
+                    <p className="text-gray-600">&quot;Make this blue darker to match the guidelines.&quot;</p>
                  </div>
               </div>
            </div>

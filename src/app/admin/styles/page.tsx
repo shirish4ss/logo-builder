@@ -16,7 +16,7 @@ export default function AdminStylesPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Style Manager</h1>
-          <p className="text-gray-500">CRUD interface for "The Master's Touch" design styles.</p>
+          <p className="text-gray-500">CRUD interface for &quot;The Master&apos;s Touch&quot; design styles.</p>
         </div>
         <Button>
           <Plus size={18} className="mr-2" /> Add New Style
@@ -31,7 +31,7 @@ export default function AdminStylesPage() {
             </div>
             <div className="p-5 flex-1 space-y-3">
               <h3 className="font-bold text-gray-900">{style.name}</h3>
-              <p className="text-xs text-gray-500 bg-gray-50 p-2 rounded italic">"{style.modifier}"</p>
+              <p className="text-xs text-gray-500 bg-gray-50 p-2 rounded italic">&quot;{style.modifier}&quot;</p>
               <div className="flex justify-between items-center pt-2">
                 <span className="text-[10px] text-blue-600 font-bold uppercase">{style.usage} Uses</span>
                 <div className="flex space-x-1">

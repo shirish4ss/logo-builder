@@ -48,7 +48,7 @@ export const LogoWizard = () => {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
         {currentStep === 1 && (
           <div className="space-y-6">
-            <h3 className="text-2xl font-bold text-gray-900">Let's start with the basics</h3>
+            <h3 className="text-2xl font-bold text-gray-900">Let&apos;s start with the basics</h3>
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700">Business Name</label>
@@ -105,7 +105,7 @@ export const LogoWizard = () => {
         {currentStep === 2 && (
           <div className="space-y-6">
             <h3 className="text-2xl font-bold text-gray-900">Choose a Design Direction</h3>
-            <p className="text-sm text-gray-500">Select one of our "Master's Touch" premium styles for better AI generation.</p>
+            <p className="text-sm text-gray-500">Select one of our &quot;Master&apos;s Touch&quot; premium styles for better AI generation.</p>
             <div className="grid grid-cols-3 gap-4">
               {[
                 { name: "Swiss Minimalist", desc: "Helvetica inspired" },
@@ -160,7 +160,7 @@ export const LogoWizard = () => {
             </div>
             <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
               <p className="text-sm text-blue-800">
-                <strong>Pro Tip:</strong> AI works best when you provide specific industry keywords and a clear vision of your brand's personality.
+                <strong>Pro Tip:</strong> AI works best when you provide specific industry keywords and a clear vision of your brand&apos;s personality.
               </p>
             </div>
           </div>
