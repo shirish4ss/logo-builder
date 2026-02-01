@@ -28,7 +28,7 @@ export async function createLogoVersion(originalLogoId: string, newSvgData: stri
     data: {
       userId: original.userId,
       projectId: original.projectId,
-      name: `${original.name} (Version)`,
+      name: `${original.name} (V${Date.now()})`,
       imageUrl: original.imageUrl,
       svgData: newSvgData,
       prompt: original.prompt,
@@ -38,7 +38,16 @@ export async function createLogoVersion(originalLogoId: string, newSvgData: stri
   });
 }
 
-export function generateShareableLink(logoId: string) {
-  // In a real app, this would be a signed URL or a dedicated share route
-  return `/share/logo/${logoId}`;
+export async function getLogoHistory(logoId: string) {
+  const logo = await prisma.logo.findUnique({ where: { id: logoId } });
+  if (!logo) return [];
+
+  // Finding other logos with similar name/project to simulate history
+  return await prisma.logo.findMany({
+    where: {
+      userId: logo.userId,
+      name: { contains: logo.name.split(' (V')[0] }
+    },
+    orderBy: { createdAt: "desc" }
+  });
 }

@@ -59,7 +59,7 @@ model Session {
 }
 
 model Logo {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   userId      String
   projectId   String?
   name        String
@@ -68,12 +68,14 @@ model Logo {
   prompt      String?
   style       String?
   colors      String? // Comma separated
-  isFavorite  Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isFavorite  Boolean   @default(false)
+  likes       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project Project? @relation(fields: [projectId], references: [id])
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project  Project?  @relation(fields: [projectId], references: [id])
+  comments Comment[]
 }
 
 model Project {
@@ -84,8 +86,55 @@ model Project {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  logos Logo[]
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logos   Logo[]
+  members TeamMember[]
+}
+
+model TeamMember {
+  id        String @id @default(cuid())
+  projectId String
+  email     String
+  role      String // OWNER, EDITOR, VIEWER
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  logoId    String
+  userId    String
+  text      String
+  createdAt DateTime @default(now())
+
+  logo Logo @relation(fields: [logoId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DesignStyle {
+  id           String  @id @default(cuid())
+  name         String  @unique
+  thumbnailUrl String?
+  promptMod    String  // The hidden prompt injection string
+  isActive     Boolean @default(true)
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  message   String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model APIKey {
+  id        String   @id @default(cuid())
+  userId    String
+  key       String   @unique
+  name      String
+  status    String   @default("ACTIVE")
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Subscription {

@@ -1,33 +1,30 @@
 export const typographyRecommendations = (industry: string) => {
   const recommendations: any = {
-    tech: ["Inter", "Roboto", "Space Grotesk"],
-    fashion: ["Playfair Display", "Montserrat", "Baskerville"],
-    food: ["Fredoka One", "Open Sans", "Patrick Hand"],
+    tech: ["Inter", "Roboto Mono", "Space Grotesk", "Outfit"],
+    fashion: ["Playfair Display", "Montserrat", "Cormorant Garamond", "Baskerville"],
+    food: ["Fredoka One", "Patrick Hand", "Open Sans", "Quicksand"],
+    health: ["Source Sans Pro", "Lato", "Merriweather", "Nunito"],
   };
-  return recommendations[industry] || ["Inter", "System"];
+  return recommendations[industry] || ["Inter", "System Sans-Serif"];
 };
 
-export const generateMockup = (logoUrl: string, type: "tshirt" | "card" | "mobile") => {
-  // Returns a mock URL for a mockup image
-  return `https://placehold.co/800x600/gray/white?text=${type}+Mockup+with+Logo`;
-};
-
-export const backgroundRemover = async (imageUrl: string) => {
-  // In a real app, this would call a background removal API like remove.bg
-  console.log("Removing background from:", imageUrl);
-  return imageUrl; // Returning original for mock
-};
-
-export const colorPaletteFromImage = (imageUrl: string) => {
-  // Mock logic to extract colors
-  return ["#3b82f6", "#1e40af", "#60a5fa"];
-};
-
-export const exportFormats = (logoId: string) => {
+export const extractPalette = async (logoUrl: string) => {
+  // In production, use a library like 'colorthief'
+  console.log(`Extracting palette from ${logoUrl}`);
   return [
-    { format: "SVG", type: "Vector", description: "Scalable vector for any size" },
-    { format: "PNG", type: "Raster", description: "High resolution with transparency" },
-    { format: "JPG", type: "Raster", description: "Standard image for web" },
-    { format: "PDF", type: "Print", description: "Standard for printing" },
+    { name: "Brand Primary", hex: "#3b82f6" },
+    { name: "Brand Secondary", hex: "#1e40af" },
+    { name: "Brand Accent", hex: "#f59e0b" },
+    { name: "Neutral Dark", hex: "#0f172a" },
+    { name: "Neutral Light", hex: "#f8fafc" },
+  ];
+};
+
+export const generateMockupSet = (logoUrl: string) => {
+  return [
+    { type: "Business Card", url: "https://placehold.co/800x500/white/blue?text=Business+Card+Mockup" },
+    { type: "T-Shirt", url: "https://placehold.co/600x600/gray/white?text=T-Shirt+Mockup" },
+    { type: "Mobile App", url: "https://placehold.co/400x800/black/white?text=App+Icon+Mockup" },
+    { type: "Office Signage", url: "https://placehold.co/1200x400/gray/black?text=Office+Sign+Mockup" },
   ];
 };
