@@ -23,7 +23,7 @@ Vercel is the easiest platform for Next.js applications.
 1. Push your code to a GitHub repository.
 2. Connect your repository to Vercel.
 3. Configure the Environment Variables in the Vercel dashboard.
-4. Set the build command: `npx prisma generate && next build`.
+4. **Crucial:** Ensure the build command is set to `npx prisma generate && next build`. This is already configured in `package.json`, but verify it in the Vercel Settings > Build & Development settings.
 5. Deploy!
 
 ## 4. Deploying to AWS (EC2/Amplify)

@@ -29,6 +29,8 @@ model User {
   transactions  Transaction[]
   notifications Notification[]
   feedbacks     Feedback[]
+  comments      Comment[]
+  apiKeys       APIKey[]
 }
 
 model Account {
