@@ -12,7 +12,7 @@ import {
   Combine, Scissors, Copy, Layers,
   Download, Save, MousePointer2,
   MinusSquare, PlusSquare, XSquare, Box,
-  ShieldCheck, AlertCircle, Loader2
+  ShieldCheck, AlertCircle, Loader2, Sparkles
 } from "lucide-react";
 
 export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
@@ -63,8 +63,6 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
 
   useEffect(() => {
     if (layers.length === 0 && initialSvg) {
-        // Mock initialization from initialSvg
-        // In a real app, we would parse the SVG elements
         setLayers([
           {
             id: "initial-logo",
@@ -84,7 +82,7 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
         ]);
         saveHistory();
     }
-  }, []);
+  }, [initialSvg, layers.length, saveHistory, setLayers]);
 
   const addNewLayer = (type: Layer['type']) => {
     const id = Math.random().toString(36).substr(2, 9);
@@ -115,6 +113,16 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
       {/* Top Toolbar */}
       <div className="h-14 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-6 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm">
         <div className="flex items-center space-x-2">
+          <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1 mr-4">
+             <button
+               onClick={() => setActiveTab("editor")}
+               className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === 'editor' ? 'bg-white dark:bg-gray-900 shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+             >Editor</button>
+             <button
+               onClick={() => setActiveTab("3d")}
+               className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === '3d' ? 'bg-white dark:bg-gray-900 shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+             >3D View</button>
+          </div>
           <Button variant="ghost" size="icon" onClick={undo} title="Undo (Ctrl+Z)"><Undo size={18} /></Button>
           <Button variant="ghost" size="icon" onClick={redo} title="Redo (Ctrl+Y)"><Redo size={18} /></Button>
           <div className="w-px h-6 bg-gray-200 dark:bg-gray-800 mx-2" />
@@ -212,6 +220,7 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
                             className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                           />
                        </div>
+
                        {layer.type === 'image' && (
                          <div className="space-y-4">
                             <div className="p-4 border-2 border-dashed border-gray-200 rounded-xl text-center">
@@ -247,19 +256,20 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
                                </select>
                             </div>
                             <div className="space-y-1">
-                            <div className="flex justify-between">
-                              <span className="text-xs text-gray-500">Curvature</span>
-                              <span className="text-xs font-mono">{layer.curvature || 0}</span>
-                            </div>
-                            <input
-                              type="range" min="-100" max="100" step="1"
-                              value={layer.curvature || 0}
-                              onChange={(e) => updateLayer(layer.id, { curvature: parseInt(e.target.value) })}
-                              className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                            />
+                                <div className="flex justify-between">
+                                  <span className="text-xs text-gray-500">Curvature</span>
+                                  <span className="text-xs font-mono">{layer.curvature || 0}</span>
+                                </div>
+                                <input
+                                  type="range" min="-100" max="100" step="1"
+                                  value={layer.curvature || 0}
+                                  onChange={(e) => updateLayer(layer.id, { curvature: parseInt(e.target.value) })}
+                                  className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                                />
                             </div>
                          </div>
                        )}
+
                        <div className="grid grid-cols-2 gap-2">
                           <div className="space-y-1">
                              <span className="text-[10px] text-gray-400 uppercase">Rotation</span>
