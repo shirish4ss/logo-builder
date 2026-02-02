@@ -4,19 +4,42 @@ import React, { useEffect } from "react";
 import { useEditorStore, Layer } from "@/lib/store";
 import { EditorCanvas } from "./editor/EditorCanvas";
 import { LayerPanel } from "./editor/LayerPanel";
+import { AIChatRefine } from "./editor/AIChatRefine";
 import { Button } from "@/components/ui/button";
 import {
   Undo, Redo, Square, Circle, Type,
   Combine, Scissors, Copy, Layers,
   Download, Save, MousePointer2,
-  MinusSquare, PlusSquare, XSquare, Box
+  MinusSquare, PlusSquare, XSquare, Box,
+  ShieldCheck, AlertCircle, Loader2
 } from "lucide-react";
 
 export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
   const {
     layers, setLayers, addLayer, updateLayer, undo, redo,
-    selectedIds, saveHistory, alignLayers, applyBooleanOp
+    selectedIds, saveHistory, alignLayers, applyBooleanOp,
+    vectorizeLayer
   } = useEditorStore();
+
+  const [uniquenessScore, setUniquenessScore] = React.useState<number | null>(null);
+  const [isCheckingUniqueness, setIsCheckingUniqueness] = React.useState(false);
+
+  const checkUniqueness = async () => {
+    setIsCheckingUniqueness(true);
+    try {
+      const response = await fetch('/api/check-uniqueness', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ svg: JSON.stringify(layers) })
+      });
+      const data = await response.json();
+      setUniquenessScore(data.score);
+    } catch (error) {
+      console.error("Uniqueness check failed:", error);
+    } finally {
+      setIsCheckingUniqueness(false);
+    }
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -108,6 +131,15 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
              <div className="w-px h-4 bg-gray-300 mx-1" />
              <Button variant="ghost" size="sm" className="h-8 px-2"><Layers size={14} className="mr-1" /> Groups</Button>
           </div>
+          {uniquenessScore !== null && (
+            <div className={`flex items-center px-3 py-1 rounded-full text-[10px] font-bold ${uniquenessScore >= 95 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+              <ShieldCheck size={12} className="mr-1" /> Uniqueness: {uniquenessScore}%
+            </div>
+          )}
+          <Button variant="ghost" size="sm" onClick={checkUniqueness} disabled={isCheckingUniqueness}>
+            {isCheckingUniqueness ? <Loader2 size={16} className="animate-spin" /> : <ShieldCheck size={16} className="mr-1" />}
+            Check IP
+          </Button>
           <Button variant="outline" size="sm"><Download size={16} className="mr-2" /> Export</Button>
           <Button size="sm"><Save size={16} className="mr-2" /> Save</Button>
         </div>
@@ -129,6 +161,7 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
         {/* Right Panels */}
         <div className="w-72 flex flex-col overflow-hidden">
            <LayerPanel />
+           <AIChatRefine />
            {/* Property Inspector */}
            <div className="h-72 border-t border-gray-100 dark:border-gray-800 p-4 bg-white dark:bg-gray-900 overflow-y-auto">
               <h3 className="font-bold text-sm mb-4">Properties</h3>
@@ -159,8 +192,41 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
                             className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                           />
                        </div>
+                       {layer.type === 'image' && (
+                         <div className="space-y-4">
+                            <div className="p-4 border-2 border-dashed border-gray-200 rounded-xl text-center">
+                               <p className="text-[10px] text-gray-400 mb-2">Raster Image</p>
+                               <Button
+                                 size="sm"
+                                 variant="outline"
+                                 className="w-full text-[10px]"
+                                 onClick={() => vectorizeLayer(layer.id)}
+                               >
+                                  <Sparkles size={12} className="mr-1 text-blue-600" /> Trace to Vector
+                               </Button>
+                            </div>
+                         </div>
+                       )}
+
                        {layer.type === 'text' && (
-                         <div className="space-y-1">
+                         <div className="space-y-3">
+                            <div className="space-y-1">
+                               <span className="text-xs text-gray-500">Font Family</span>
+                               <select
+                                 value={layer.fontFamily || ""}
+                                 onChange={(e) => updateLayer(layer.id, { fontFamily: e.target.value })}
+                                 className="w-full p-2 text-xs border rounded-lg dark:bg-gray-800"
+                               >
+                                  <option value="">Default</option>
+                                  <option value="Inter">Inter</option>
+                                  <option value="Playfair Display">Playfair Display</option>
+                                  <option value="Orbitron">Orbitron</option>
+                                  <option value="Libre Baskerville">Libre Baskerville</option>
+                                  <option value="Josefin Sans">Josefin Sans</option>
+                                  <option value="Poppins">Poppins</option>
+                               </select>
+                            </div>
+                            <div className="space-y-1">
                             <div className="flex justify-between">
                               <span className="text-xs text-gray-500">Curvature</span>
                               <span className="text-xs font-mono">{layer.curvature || 0}</span>

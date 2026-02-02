@@ -83,3 +83,56 @@ export async function enhancePrompt(basePrompt: string) {
   // Logic to make a user prompt better for AI generation
   return `${basePrompt}, high resolution, professional logo design, vector art, 4k, clean lines`;
 }
+
+export async function refineLogoWithAI(currentLayers: any[], prompt: string) {
+  const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+
+  if (!OPENROUTER_API_KEY) {
+    console.warn("OPENROUTER_API_KEY missing. Simulating refinement.");
+    // Simulate some logic
+    if (prompt.toLowerCase().includes("blue")) {
+      return currentLayers.map(l => l.type === 'path' ? { ...l, fill: '#0000FF' } : l);
+    }
+    if (prompt.toLowerCase().includes("remove")) {
+      return currentLayers.filter(l => !prompt.toLowerCase().includes(l.name.toLowerCase()));
+    }
+    return currentLayers;
+  }
+
+  const systemPrompt = `
+    You are a professional logo designer. You receive the current state of a logo as a JSON array of layers.
+    The user will provide a refinement request.
+    You must return the updated JSON array of layers.
+    Only modify existing properties or add/remove layers as requested.
+    Layers have: id, name, type (path, text, circle, rect), x, y, fill, stroke, strokeWidth, rotation, opacity, visible, locked.
+    Text layers also have 'text' and 'curvature'.
+    Rect layers have 'width', 'height'.
+    Circle layers have 'radius'.
+  `;
+
+  try {
+    const response = await axios.post(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        model: "google/gemini-flash-1.5-exp",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Current Layers: ${JSON.stringify(currentLayers)}\nRequest: ${prompt}\nRespond only with the updated JSON array.` }
+        ],
+        response_format: { type: "json_object" }
+      },
+      {
+        headers: {
+          "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    const content = response.data.choices[0].message.content;
+    return JSON.parse(content);
+  } catch (error) {
+    console.error("AI Refinement Error:", error);
+    return currentLayers;
+  }
+}

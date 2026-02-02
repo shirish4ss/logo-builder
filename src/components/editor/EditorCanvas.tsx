@@ -46,6 +46,18 @@ export const EditorCanvas = () => {
     };
 
     switch (layer.type) {
+      case "image":
+        return (
+          <motion.image
+            {...commonProps}
+            {...dragProps}
+            href={layer.imageUrl}
+            x={-(layer.width!/2)}
+            y={-(layer.height!/2)}
+            width={layer.width}
+            height={layer.height}
+          />
+        );
       case "path":
         return <motion.path {...commonProps} {...dragProps} d={layer.d} />;
       case "circle":
@@ -67,6 +79,7 @@ export const EditorCanvas = () => {
                         opacity={layer.opacity}
                         onClick={(e) => handleLayerClick(e, layer.id)}
                         className="select-none font-bold"
+                        style={{ fontFamily: layer.fontFamily || 'inherit' }}
                     >
                         <textPath href={`#${pathId}`} startOffset="50%" textAnchor="middle">
                             {layer.text}
@@ -81,6 +94,7 @@ export const EditorCanvas = () => {
             textAnchor="middle"
             dominantBaseline="middle"
             className="select-none font-bold"
+            style={{ ...commonProps.style, fontFamily: layer.fontFamily || 'inherit' }}
           >
             {layer.text}
           </text>

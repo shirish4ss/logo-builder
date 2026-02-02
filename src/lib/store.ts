@@ -4,9 +4,11 @@ import { subscribeWithSelector } from 'zustand/middleware';
 export interface Layer {
   id: string;
   name: string;
-  type: 'path' | 'text' | 'circle' | 'rect';
+  type: 'path' | 'text' | 'circle' | 'rect' | 'image';
   d?: string;
   text?: string;
+  imageUrl?: string;
+  fontFamily?: string;
   curvature?: number; // 0 is flat, positive is arch up, negative is arch down
   x: number;
   y: number;
@@ -46,6 +48,9 @@ interface EditorState {
 
   // Boolean Ops
   applyBooleanOp: (type: 'union' | 'subtract' | 'intersect' | 'exclude') => void;
+
+  // Vectorization
+  vectorizeLayer: (id: string) => Promise<void>;
 }
 
 export const useEditorStore = create<EditorState>()(
@@ -138,6 +143,34 @@ export const useEditorStore = create<EditorState>()(
 
       set({ layers: newLayers });
       get().saveHistory();
+    },
+
+    vectorizeLayer: async (id) => {
+      const { layers, updateLayer } = get();
+      const layer = layers.find(l => l.id === id);
+      if (!layer || layer.type !== 'image') return;
+
+      try {
+        const response = await fetch('/api/vectorize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: layer.imageUrl })
+        });
+        const data = await response.json();
+
+        // Transform image layer into path layer
+        const updates: Partial<Layer> = {
+          type: 'path',
+          d: data.path,
+          fill: '#000000',
+          name: `${layer.name} (Vector)`
+        };
+
+        updateLayer(id, updates);
+        get().saveHistory();
+      } catch (error) {
+        console.error("Vectorization failed:", error);
+      }
     },
 
     applyBooleanOp: async (type) => {

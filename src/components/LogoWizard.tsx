@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, ChevronLeft, Upload, CheckCircle2 } from "lucide-react";
+import { ChevronRight, ChevronLeft, Upload, CheckCircle2, Type } from "lucide-react";
+import { getFontPairingsByStyle } from "@/lib/fonts";
 
 const steps = [
   { id: 1, name: "Business Details", desc: "Tell us about your brand" },
