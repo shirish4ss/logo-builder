@@ -10,7 +10,7 @@ const steps = [
   { id: 3, name: "Samples & Finalize", desc: "Upload references and generate" },
 ];
 
-export const LogoWizard = () => {
+export const LogoWizard = ({ onFinish }: { onFinish?: (data: any) => void }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     businessName: "",
@@ -174,7 +174,17 @@ export const LogoWizard = () => {
           >
             <ChevronLeft size={20} className="mr-2" /> Back
           </Button>
-          <Button onClick={currentStep === 3 ? () => alert("Generating...") : nextStep} className="px-8">
+          <Button
+            onClick={currentStep === 3 ? () => {
+              if (onFinish) {
+                onFinish({
+                  ...formData,
+                  suggestedLogo: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="#3b82f6" /><text x="50" y="55" font-family="Arial" font-size="12" fill="white" text-anchor="middle">LOGO</text></svg>'
+                });
+              }
+            } : nextStep}
+            className="px-8"
+          >
             {currentStep === 3 ? "Generate Logo Ideas" : "Next"} <ChevronRight size={20} className="ml-2" />
           </Button>
         </div>

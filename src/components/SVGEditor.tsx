@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, RefreshCw, Undo, Save } from "lucide-react";
+import DOMPurify from "isomorphic-dompurify";
 
 export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
   const [svgContent, setSvgContent] = useState(initialSvg);
@@ -20,14 +21,9 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex">
       {/* Canvas */}
       <div className="flex-1 bg-gray-50 p-10 flex items-center justify-center min-h-[400px]">
-        {/*
-          SECURITY NOTE: In a production environment, you MUST sanitize the SVG content
-          using a library like 'dompurify' before using dangerouslySetInnerHTML.
-          This prevents potential XSS attacks from malicious SVG files.
-        */}
         <div
           className="w-64 h-64 bg-white shadow-xl rounded-xl flex items-center justify-center"
-          dangerouslySetInnerHTML={{ __html: svgContent }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(svgContent) }}
         />
       </div>
 

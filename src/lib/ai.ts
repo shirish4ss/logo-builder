@@ -30,24 +30,53 @@ export async function generateLogoIdeas(businessData: any) {
     3. The reasoning behind the design choice.
   `;
 
-  if (!GOOGLE_GEMINI_API_KEY && !OPENROUTER_API_KEY) {
-    console.warn("AI API keys missing. Returning mock data.");
+  if (!OPENROUTER_API_KEY) {
+    console.warn("OPENROUTER_API_KEY missing. Returning mock data.");
     return [
       {
-        name: "Concept 1: Modern Abstract",
+        name: "Concept 1: Modern Abstract (MOCK)",
         prompt: `A minimalist logo for ${businessData.businessName}, ${businessData.stylePreference} style, using ${businessData.colorPreference} colors. Vector style, white background.`,
         reasoning: "Modern and clean look suitable for the industry."
       },
       {
-        name: "Concept 2: Symbolic Growth",
+        name: "Concept 2: Symbolic Growth (MOCK)",
         prompt: `An iconic logo featuring a symbol of growth for ${businessData.businessName}, flat design, ${businessData.colorPreference}.`,
         reasoning: "Focuses on the brand's core values of progress."
       }
     ];
   }
 
-  // Actual API call logic would go here
-  // ...
+  try {
+    const response = await axios.post(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        model: "google/gemini-flash-1.5-exp",
+        messages: [
+          {
+            role: "system",
+            content: "You are a world-class brand identity designer. You provide logo concepts in JSON format."
+          },
+          {
+            role: "user",
+            content: prompt + "\nRespond with a JSON array of objects, each having 'name', 'prompt', and 'reasoning' keys."
+          }
+        ],
+        response_format: { type: "json_object" }
+      },
+      {
+        headers: {
+          "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    const content = response.data.choices[0].message.content;
+    return JSON.parse(content);
+  } catch (error) {
+    console.error("AI Generation Error:", error);
+    throw new Error("Failed to generate logo ideas. Please check your API configuration.");
+  }
 }
 
 export async function enhancePrompt(basePrompt: string) {

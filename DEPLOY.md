@@ -30,10 +30,33 @@ STRIPE_SECRET_KEY="your-stripe-secret"
 ```
 
 ### Important: Database Setup
-The current project uses SQLite. While this works on Vercel with a local file, it is **volatile** (data is lost on every redeploy).
-For a production app, we highly recommend:
-1. **Turso:** A distributed SQLite database that works perfectly with this project.
-2. **Postgres:** If you switch to Postgres, update `provider = "sqlite"` to `provider = "postgresql"` in `prisma/schema.prisma` and run `npx prisma migrate dev`.
+The current project uses SQLite. While this works on Vercel with a local file, it is **volatile** (data is lost on every redeploy and filesystem is read-only in some regions).
+For a production app, follow these steps:
+
+#### Option 1: Turso (Recommended for SQLite)
+1. Sign up at [turso.tech](https://turso.tech).
+2. Create a new database.
+3. Get your **Database URL** and **Auth Token**.
+4. Set `DATABASE_URL` in Vercel to: `libsql://your-db-name-user.turso.io`
+5. Since we are using Prisma, you need to use the `adapter-libsql` or simply use the URL if using a compatible Prisma version.
+6. For Prisma + Turso:
+   - Install `@libsql/client` and `@prisma/adapter-libsql`.
+   - Update `prisma/schema.prisma` datasource to `provider = "postgresql"` (Turso behaves like Postgres for Prisma) or use the specific Turso integration.
+
+#### Option 2: Supabase (Postgres)
+1. Create a project at [supabase.com](https://supabase.com).
+2. Go to Project Settings > Database.
+3. Copy the **Connection String** (Transaction mode).
+4. Update `prisma/schema.prisma`:
+   ```prisma
+   datasource db {
+     provider = "postgresql"
+     url      = env("DATABASE_URL")
+   }
+   ```
+5. Run `npx prisma migrate dev` locally to generate the initial migration.
+6. Push your schema to Supabase: `npx prisma db push`.
+7. Set the `DATABASE_URL` in Vercel environment variables.
 
 ## 3. Deploying to Vercel (Recommended)
 Vercel is the easiest platform for Next.js applications.

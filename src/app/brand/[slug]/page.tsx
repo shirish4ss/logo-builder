@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, use } from "react";
 import { Button } from "@/components/ui/button";
 import { Heart, Share2, Download, MessageSquare, Copy } from "lucide-react";
 
-export default function PublicBrandPortal({ params }: { params: { slug: string } }) {
+export default function PublicBrandPortal({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
   const [likes, setLikes] = useState(124);
   const [hasLiked, setHasLiked] = useState(false);
 
   const brand = {
-    name: "InnovateX",
+    name: slug.charAt(0).toUpperCase() + slug.slice(1),
     logo: "https://placehold.co/400x400/white/blue?text=InnovateX",
     colors: ["#3b82f6", "#1e40af", "#f59e0b"],
     fonts: ["Inter Black", "Inter Regular"],

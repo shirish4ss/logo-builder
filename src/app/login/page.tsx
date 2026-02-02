@@ -38,11 +38,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+      <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-900 p-10 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800">
         <div>
           <h1 className="text-center text-3xl font-extrabold text-blue-600">LogoAI</h1>
-          <h2 className="mt-6 text-center text-2xl font-bold text-gray-900">Sign in to your account</h2>
+          <h2 className="mt-6 text-center text-2xl font-bold text-gray-900 dark:text-white">Sign in to your account</h2>
+          <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl">
+            <p className="text-xs text-blue-700 dark:text-blue-300 text-center">
+              <strong>Admin Access:</strong> The first user to register on this platform is automatically granted full administrative privileges.
+            </p>
+          </div>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
@@ -50,26 +55,26 @@ export default function LoginPage() {
               {error}
             </div>
           )}
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div className="mb-4">
-              <label className="text-sm font-semibold text-gray-700">Email Address</label>
+          <div className="rounded-md shadow-sm space-y-4">
+            <div>
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Email Address</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="email@example.com"
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-700">Password</label>
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Password</label>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="••••••••"
               />
             </div>
