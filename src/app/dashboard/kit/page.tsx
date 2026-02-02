@@ -98,7 +98,18 @@ export default function BrandingKitPage() {
               A comprehensive PDF guide on how to use your brand colors, typography, and logo across different media.
             </p>
           </div>
-          <Button className="bg-white text-blue-600 hover:bg-blue-50 mt-6">Generate PDF Guidelines</Button>
+          <Button
+            className="bg-white text-blue-600 hover:bg-blue-50 mt-6 font-bold"
+            onClick={async () => {
+                const { generateBrandGuidelines, downloadFile } = await import('@/lib/pdf-gen');
+                const pdfBytes = await generateBrandGuidelines({
+                    name: 'InnovateX',
+                    colors: ['#3b82f6', '#1e40af', '#f59e0b'],
+                    fonts: ['Inter Black', 'Inter Regular']
+                });
+                downloadFile(pdfBytes, 'brand-guidelines.pdf', 'application/pdf');
+            }}
+          >Generate PDF Booklet</Button>
         </section>
 
         <section className="bg-slate-900 rounded-2xl p-10 text-white flex flex-col justify-between border border-slate-800">

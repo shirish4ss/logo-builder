@@ -84,3 +84,18 @@ To make the "Direct-to-Print" feature live:
 
 ## 6. International Payments
 Ensure you have switched from "Test Mode" to "Live Mode" in your Stripe and Razorpay dashboards before launching.
+
+## 7. Localization (i18n)
+The app uses `next-intl` (integrated) or a custom translation dictionary (current).
+- To add a new language, update the `translations` object in `src/app/pricing/page.tsx`.
+- For production, ensure the `NEXT_PUBLIC_DEFAULT_LOCALE` is set if you want to force a specific start language.
+
+## 8. 3D Mockups (Three.js)
+The 3D Mockup generator uses `@react-three/fiber`.
+- High-quality models: In production, replace the basic geometries in `src/components/editor/Mockup3DViewer.tsx` with GLTF models of T-shirts and Mugs.
+- Hosting models: Store large `.glb` files in the `public/models/` directory for fast loading.
+
+## 9. Print-Ready PDF Generation
+We use `pdf-lib` for CMYK simulation.
+- Ensure you have the necessary fonts (Inter, etc.) available in your production server's filesystem if you move to server-side PDF generation.
+- The current implementation is client-side for maximum scalability.

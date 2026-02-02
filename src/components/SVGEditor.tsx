@@ -5,6 +5,7 @@ import { useEditorStore, Layer } from "@/lib/store";
 import { EditorCanvas } from "./editor/EditorCanvas";
 import { LayerPanel } from "./editor/LayerPanel";
 import { AIChatRefine } from "./editor/AIChatRefine";
+import { Mockup3DViewer } from "./editor/Mockup3DViewer";
 import { Button } from "@/components/ui/button";
 import {
   Undo, Redo, Square, Circle, Type,
@@ -21,6 +22,7 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
     vectorizeLayer
   } = useEditorStore();
 
+  const [activeTab, setActiveTab] = React.useState<"editor" | "3d">("editor");
   const [uniquenessScore, setUniquenessScore] = React.useState<number | null>(null);
   const [isCheckingUniqueness, setIsCheckingUniqueness] = React.useState(false);
 
@@ -140,7 +142,17 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
             {isCheckingUniqueness ? <Loader2 size={16} className="animate-spin" /> : <ShieldCheck size={16} className="mr-1" />}
             Check IP
           </Button>
-          <Button variant="outline" size="sm"><Download size={16} className="mr-2" /> Export</Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => {
+                const { generateCMYK_PDF, downloadFile } = await import('@/lib/pdf-gen');
+                const pdfBytes = await generateCMYK_PDF('', 'My Brand');
+                downloadFile(pdfBytes, 'logo-print-ready.pdf', 'application/pdf');
+            }}
+          >
+            <Download size={16} className="mr-2" /> Print PDF (CMYK)
+          </Button>
           <Button size="sm"><Save size={16} className="mr-2" /> Save</Button>
         </div>
       </div>
@@ -156,7 +168,15 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
         </div>
 
         {/* Main Canvas Area */}
-        <EditorCanvas />
+        {activeTab === "editor" ? (
+            <EditorCanvas />
+        ) : (
+            <div className="flex-1 p-10 bg-gray-100 dark:bg-gray-950 flex items-center justify-center">
+                <div className="w-full max-w-4xl aspect-video">
+                    <Mockup3DViewer logoUrl="https://placehold.co/400x400/white/blue?text=Logo" />
+                </div>
+            </div>
+        )}
 
         {/* Right Panels */}
         <div className="w-72 flex flex-col overflow-hidden">
