@@ -257,6 +257,7 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
                               onChange={(e) => updateLayer(layer.id, { curvature: parseInt(e.target.value) })}
                               className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                             />
+                            </div>
                          </div>
                        )}
                        <div className="grid grid-cols-2 gap-2">
