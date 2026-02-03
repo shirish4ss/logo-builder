@@ -59,7 +59,7 @@ export const Sidebar = () => {
       {isAdmin && (
         <div className="p-4 border-t border-gray-200 dark:border-gray-800">
           <Link
-            href="/admin"
+            href="/admin/dashboard"
             className="flex items-center space-x-3 p-3 rounded-lg text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
           >
             <User size={20} />
