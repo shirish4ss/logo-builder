@@ -3,5 +3,5 @@
 import GenericDashboardPage from "@/components/dashboard/GenericDashboardPage";
 
 export default function Page() {
-  return <GenericDashboardPage title="3D Mockups" />;
+  return <GenericDashboardPage title="Community" />;
 }

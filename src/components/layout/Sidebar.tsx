@@ -8,7 +8,7 @@ import {
   LayoutDashboard, PenTool, Briefcase, Share2, Settings, User,
   Image as ImageIcon, Heart, Users, CreditCard, History,
   Puzzle, Gift, HelpCircle, Bell, Box, FileText, Globe,
-  MessageSquare, Shield, LogOut, Sparkles
+  MessageSquare, Shield, LogOut, Sparkles, Zap
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,14 @@ const menuItems = [
   { name: "Billing", href: "/dashboard/billing", icon: CreditCard },
   { name: "Support", href: "/dashboard/support", icon: HelpCircle },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
+  { name: "Vectorizer", href: "/dashboard/vectorizer", icon: Zap },
+  { name: "Share Links", href: "/dashboard/share", icon: Globe },
+  { name: "History", href: "/dashboard/history", icon: History },
+  { name: "Assets", href: "/dashboard/assets", icon: Puzzle },
+  { name: "Integrations", href: "/dashboard/integrations", icon: Globe },
+  { name: "Rewards", href: "/dashboard/rewards", icon: Gift },
+  { name: "Community", href: "/dashboard/community", icon: Users },
 ];
 
 export const Sidebar = () => {

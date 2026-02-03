@@ -17,7 +17,8 @@ import {
   Combine, Scissors, Copy, Layers,
   Download, Save, MousePointer2,
   MinusSquare, PlusSquare, XSquare, Box,
-  ShieldCheck, AlertCircle, Loader2, Sparkles
+  ShieldCheck, AlertCircle, Loader2, Sparkles,
+  Spline
 } from "lucide-react";
 
 export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
@@ -132,6 +133,7 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
           <Button variant="ghost" size="icon" onClick={redo} title="Redo (Ctrl+Y)"><Redo size={18} /></Button>
           <div className="w-px h-6 bg-gray-200 dark:bg-gray-800 mx-2" />
           <Button variant="ghost" size="icon" title="Select Tool"><MousePointer2 size={18} className="text-blue-600" /></Button>
+          <Button variant="ghost" size="icon" onClick={() => addNewLayer('path')} title="Path / Pen Tool"><Spline size={18} /></Button>
           <Button variant="ghost" size="icon" onClick={() => addNewLayer('rect')} title="Rectangle"><Square size={18} /></Button>
           <Button variant="ghost" size="icon" onClick={() => addNewLayer('circle')} title="Circle"><Circle size={18} /></Button>
           <Button variant="ghost" size="icon" onClick={() => addNewLayer('text')} title="Text"><Type size={18} /></Button>
@@ -225,6 +227,26 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
                             className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                           />
                        </div>
+
+                       {layer.type === 'path' && (
+                         <div className="space-y-4">
+                            <div className="p-4 border border-blue-100 dark:border-blue-900/30 bg-blue-50/30 dark:bg-blue-900/10 rounded-xl">
+                               <p className="text-[10px] font-black text-blue-600 uppercase mb-3">Advanced Node Editing</p>
+                               <div className="grid grid-cols-2 gap-2">
+                                  <Button size="sm" variant="outline" className="text-[10px] h-8">Smooth Points</Button>
+                                  <Button size="sm" variant="outline" className="text-[10px] h-8">Sharp Corners</Button>
+                               </div>
+                               <div className="mt-3 space-y-2">
+                                  <span className="text-[10px] text-gray-500">Path Data (SVG D-Path)</span>
+                                  <textarea
+                                    value={layer.d}
+                                    onChange={(e) => updateLayer(layer.id, { d: e.target.value })}
+                                    className="w-full h-20 p-2 text-[10px] font-mono border rounded-lg dark:bg-gray-800"
+                                  />
+                               </div>
+                            </div>
+                         </div>
+                       )}
 
                        {layer.type === 'image' && (
                          <div className="space-y-4">

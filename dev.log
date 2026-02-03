@@ -1,0 +1,14 @@
+
+> test-app@0.1.0 dev
+> next dev
+
+ ⚠ Mismatching @next/swc version, detected: 15.5.7 while Next.js is on 15.5.11. Please ensure these match
+ ⚠ Port 3000 is in use by an unknown process, using available port 3004 instead.
+ ⚠ Mismatching @next/swc version, detected: 15.5.7 while Next.js is on 15.5.11. Please ensure these match
+   ▲ Next.js 15.5.11
+   - Local:        http://localhost:3004
+   - Network:      http://192.168.0.2:3004
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 5s
