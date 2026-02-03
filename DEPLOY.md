@@ -6,7 +6,13 @@ This guide provides instructions on how to push the LogoAI tool to a live server
 - A Vercel or AWS account.
 - A Google Gemini API Key or OpenRouter API Key.
 - Razorpay and Stripe API keys (for live payments).
-- A managed SQLite (e.g., Turso) or Postgres database (if migrating from SQLite).
+- A managed Postgres database (Required: The current schema is configured for PostgreSQL).
+
+### Fix for Local Build Errors
+If you encounter "Module not found" errors for `three`, `@react-three/fiber`, or `pdf-lib` during `npm run build`, follow these steps:
+1. **Clear Multiple Lockfiles:** Ensure you don't have a `package-lock.json` in your user home directory (`C:\Users\YourName\`). Next.js might mistakenly pick it up as the workspace root.
+2. **Reinstall Dependencies:** Run `rm -rf node_modules package-lock.json && npm install` (or delete them manually on Windows and run `npm install`).
+3. **Sync SWC Version:** If you see a warning about mismatching `@next/swc` version, run `npm i @next/swc@latest` to align it with your Next.js version.
 
 ## 2. Environment Variables
 Ensure the following variables are set in your production environment. Failure to set these correctly will result in runtime errors.
@@ -30,20 +36,9 @@ STRIPE_SECRET_KEY="your-stripe-secret"
 ```
 
 ### Important: Database Setup
-The current project uses SQLite. While this works on Vercel with a local file, it is **volatile** (data is lost on every redeploy and filesystem is read-only in some regions).
-For a production app, follow these steps:
+The current project is configured for **PostgreSQL**.
 
-#### Option 1: Turso (Recommended for SQLite)
-1. Sign up at [turso.tech](https://turso.tech).
-2. Create a new database.
-3. Get your **Database URL** and **Auth Token**.
-4. Set `DATABASE_URL` in Vercel to: `libsql://your-db-name-user.turso.io`
-5. Since we are using Prisma, you need to use the `adapter-libsql` or simply use the URL if using a compatible Prisma version.
-6. For Prisma + Turso:
-   - Install `@libsql/client` and `@prisma/adapter-libsql`.
-   - Update `prisma/schema.prisma` datasource to `provider = "postgresql"` (Turso behaves like Postgres for Prisma) or use the specific Turso integration.
-
-#### Option 2: Supabase (Postgres)
+#### Supabase or Neon (Postgres)
 1. Create a project at [supabase.com](https://supabase.com).
 2. Go to Project Settings > Database.
 3. Copy the **Connection String** (Transaction mode).

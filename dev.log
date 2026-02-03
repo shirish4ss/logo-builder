@@ -12,3 +12,12 @@
 
  ✓ Starting...
  ✓ Ready in 5s
+ ⚠ Found a change in next.config.ts. Restarting the server to apply the changes...
+ ⚠ Mismatching @next/swc version, detected: 15.5.7 while Next.js is on 15.5.11. Please ensure these match
+   ▲ Next.js 15.5.11
+   - Local:        http://localhost:3004
+   - Network:      http://192.168.0.2:3004
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 7.9s

@@ -1,12 +1,11 @@
 "use client";
 
 import React, { Suspense, useState, useEffect } from "react";
-import * as THREE from "three";
 
 // We'll use dynamic imports to avoid build-time resolution issues for R3F
 // which is causing persistent "Module not found" errors in some environments.
 
-const MockupModel = ({ type, logoUrl, Decal }: { type: 'mug' | 'shirt', logoUrl: string, Decal: any }) => {
+const MockupModel = ({ type, logoUrl, Decal, THREE }: { type: 'mug' | 'shirt', logoUrl: string, Decal: any, THREE: any }) => {
   return (
     <group>
       {type === 'mug' ? (
@@ -20,7 +19,7 @@ const MockupModel = ({ type, logoUrl, Decal }: { type: 'mug' | 'shirt', logoUrl:
               scale={[0.8, 0.8, 0.8]}
             >
                <meshBasicMaterial
-                 map={new THREE.TextureLoader().load(logoUrl)}
+                 map={THREE ? new THREE.TextureLoader().load(logoUrl) : null}
                  transparent
                  polygonOffset
                  polygonOffsetFactor={-1}
@@ -39,7 +38,7 @@ const MockupModel = ({ type, logoUrl, Decal }: { type: 'mug' | 'shirt', logoUrl:
               scale={[1, 1, 1]}
             >
                <meshBasicMaterial
-                 map={new THREE.TextureLoader().load(logoUrl)}
+                 map={THREE ? new THREE.TextureLoader().load(logoUrl) : null}
                  transparent
                  polygonOffset
                  polygonOffsetFactor={-1}
@@ -60,9 +59,10 @@ export const Mockup3DViewer = ({ logoUrl }: { logoUrl: string }) => {
     // Dynamically import to ensure it's only handled at runtime
     Promise.all([
       import("@react-three/fiber"),
-      import("@react-three/drei")
-    ]).then(([fiber, drei]) => {
-      setModules({ Canvas: fiber.Canvas, Drei: drei });
+      import("@react-three/drei"),
+      import("three")
+    ]).then(([fiber, drei, three]) => {
+      setModules({ Canvas: fiber.Canvas, Drei: drei, THREE: three });
     }).catch(err => {
       console.error("Failed to load 3D modules:", err);
     });
@@ -88,7 +88,7 @@ export const Mockup3DViewer = ({ logoUrl }: { logoUrl: string }) => {
         <Canvas shadows>
           <Suspense fallback={null}>
             <Stage environment="city" intensity={0.6}>
-              <MockupModel type={activeMockup} logoUrl={logoUrl} Decal={Decal} />
+              <MockupModel type={activeMockup} logoUrl={logoUrl} Decal={Decal} THREE={modules.THREE} />
             </Stage>
             <OrbitControls makeDefault autoRotate autoRotateSpeed={0.5} minPolarAngle={Math.PI / 2.5} maxPolarAngle={Math.PI / 1.5} />
           </Suspense>
