@@ -5,8 +5,13 @@ import { useEditorStore, Layer } from "@/lib/store";
 import { EditorCanvas } from "./editor/EditorCanvas";
 import { LayerPanel } from "./editor/LayerPanel";
 import { AIChatRefine } from "./editor/AIChatRefine";
-import { Mockup3DViewer } from "./editor/Mockup3DViewer";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
+
+const Mockup3DViewer = dynamic(
+  () => import("./editor/Mockup3DViewer").then((mod) => mod.Mockup3DViewer),
+  { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center bg-gray-50 dark:bg-gray-900 animate-pulse rounded-2xl">Loading 3D Engine...</div> }
+);
 import {
   Undo, Redo, Square, Circle, Type,
   Combine, Scissors, Copy, Layers,
