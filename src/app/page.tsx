@@ -2,24 +2,14 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import { motion } from "framer-motion";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300 text-gray-900 dark:text-gray-100">
-      <header className="px-10 py-6 flex justify-between items-center border-b border-gray-100 dark:border-gray-800 backdrop-blur-md sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80">
-        <h1 className="text-3xl font-extrabold text-blue-600 tracking-tight">LogoAI</h1>
-        <nav className="flex items-center space-x-8">
-          <Link href="/features" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium">Features</Link>
-          <Link href="/pricing" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium">Pricing</Link>
-          <Link href="/login" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium">Login</Link>
-          <ThemeToggle />
-          <Link href="/register">
-            <Button>Get Started</Button>
-          </Link>
-        </nav>
-      </header>
+      <PublicNavbar />
 
       <main>
         <section className="py-32 px-10 max-w-7xl mx-auto text-center">
@@ -98,9 +88,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="py-10 border-t border-gray-100 text-center text-gray-400 text-sm">
-        &copy; 2025 LogoAI. All rights reserved. Built with precision for innovators.
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

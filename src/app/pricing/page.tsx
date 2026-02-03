@@ -3,17 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Check, ShieldCheck, Globe, CreditCard } from "lucide-react";
+import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 
 export default function PricingPage() {
   const [currency, setCurrency] = useState<"INR" | "USD">("INR");
   const [locale, setLocale] = useState<"en" | "hi" | "es">("en");
-
-  // Simulated IP detection
-  useEffect(() => {
-    // In a real app, use a service like ipapi.co or Cloudflare Headers
-    // const country = await fetchCountryFromIP();
-    // if (country !== 'IN') setCurrency('USD');
-  }, []);
 
   const translations = {
     en: {
@@ -55,6 +50,8 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300">
+      <PublicNavbar />
+
       <header className="py-10 px-10 flex justify-between items-center max-w-7xl mx-auto">
         <div className="flex items-center space-x-4 bg-gray-100 dark:bg-gray-800 p-1.5 rounded-full">
            <button onClick={() => setLocale('en')} className={`px-4 py-1.5 rounded-full text-xs font-bold ${locale === 'en' ? 'bg-white dark:bg-gray-700 shadow-sm' : 'text-gray-500'}`}>EN</button>
@@ -76,7 +73,7 @@ export default function PricingPage() {
 
       <main className="max-w-7xl mx-auto px-10 pb-32">
         <div className="text-center mb-20 space-y-4">
-          <h1 className="text-6xl font-black tracking-tight">{t.title}</h1>
+          <h1 className="text-6xl font-black tracking-tight dark:text-white">{t.title}</h1>
           <p className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">{t.subtitle}</p>
         </div>
 
@@ -84,9 +81,9 @@ export default function PricingPage() {
           {plans.map((plan, i) => (
             <div key={i} className={`relative p-10 rounded-[3rem] border transition-all hover:shadow-2xl ${plan.popular ? 'border-blue-600 shadow-xl bg-blue-50/10' : 'border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900'}`}>
               {plan.popular && <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-6 py-1.5 rounded-full text-xs font-bold">MOST POPULAR</span>}
-              <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+              <h3 className="text-2xl font-bold mb-2 dark:text-white">{plan.name}</h3>
               <div className="flex items-baseline space-x-2 mb-8">
-                <span className="text-5xl font-black">{currency === 'INR' ? plan.priceINR : plan.priceUSD}</span>
+                <span className="text-5xl font-black dark:text-white">{currency === 'INR' ? plan.priceINR : plan.priceUSD}</span>
                 <span className="text-gray-400">/month</span>
               </div>
 
@@ -112,7 +109,7 @@ export default function PricingPage() {
             <div className="flex items-center space-x-3">
                 <ShieldCheck className="text-blue-600" size={32} />
                 <div className="text-left">
-                    <p className="font-bold">Secure Transactions</p>
+                    <p className="font-bold dark:text-white">Secure Transactions</p>
                     <p className="text-xs text-gray-500">Industry standard encryption.</p>
                 </div>
             </div>
@@ -122,6 +119,8 @@ export default function PricingPage() {
             </div>
         </div>
       </main>
+
+      <PublicFooter />
     </div>
   );
 }
