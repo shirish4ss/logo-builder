@@ -44,7 +44,7 @@ export async function generateCMYK_PDF(logoSvg: string, brandName: string) {
 }
 
 export function downloadFile(data: Uint8Array, fileName: string, type: string) {
-    const blob = new Blob([data], { type });
+    const blob = new Blob([data as any], { type });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

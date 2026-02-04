@@ -53,7 +53,7 @@ const MockupModel = ({ type, logoUrl, Decal, THREE }: { type: 'mug' | 'shirt', l
 
 export const Mockup3DViewer = ({ logoUrl }: { logoUrl: string }) => {
   const [activeMockup, setActiveMockup] = useState<'mug' | 'shirt'>('mug');
-  const [modules, setModules] = useState<{ Canvas: any, Drei: any } | null>(null);
+  const [modules, setModules] = useState<{ Canvas: any, Drei: any, THREE: any } | null>(null);
 
   useEffect(() => {
     // Dynamically import to ensure it's only handled at runtime

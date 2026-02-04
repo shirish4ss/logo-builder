@@ -16,7 +16,10 @@ export const PublicNavbar = () => {
       </Link>
       <nav className="hidden md:flex items-center space-x-8">
         <Link href="/features" className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-bold transition-colors">Features</Link>
+        <Link href="/showcase" className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-bold transition-colors">Showcase</Link>
         <Link href="/pricing" className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-bold transition-colors">Pricing</Link>
+        <Link href="/about" className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-bold transition-colors">About</Link>
+        <div className="w-px h-4 bg-gray-200 dark:bg-gray-800" />
         <Link href="/login" className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-bold transition-colors">Login</Link>
         <ThemeToggle />
         <Link href="/register">

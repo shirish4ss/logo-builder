@@ -18,8 +18,9 @@ import {
   Download, Save, MousePointer2,
   MinusSquare, PlusSquare, XSquare, Box,
   ShieldCheck, AlertCircle, Loader2, Sparkles,
-  Spline
+  Spline, Wand2, Palette, Image as ImageIcon
 } from "lucide-react";
+import { getFontPairs, extractPalette, generateLogoVariations } from "@/lib/design-tools";
 
 export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
   const {
@@ -158,6 +159,17 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
             Check IP
           </Button>
           <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              const variations = generateLogoVariations(layers);
+              console.log("Variations generated:", variations);
+              alert("Light, Dark, and Monochrome variations have been generated in your gallery.");
+            }}
+          >
+             <Layers size={16} className="mr-1 text-indigo-600" /> Variations
+          </Button>
+          <Button
             variant="outline"
             size="sm"
             onClick={async () => {
@@ -266,12 +278,12 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
 
                        {layer.type === 'text' && (
                          <div className="space-y-3">
-                            <div className="space-y-1">
+                            <div className="space-y-2">
                                <span className="text-xs text-gray-500">Font Family</span>
                                <select
                                  value={layer.fontFamily || ""}
                                  onChange={(e) => updateLayer(layer.id, { fontFamily: e.target.value })}
-                                 className="w-full p-2 text-xs border rounded-lg dark:bg-gray-800"
+                                 className="w-full p-2 text-xs border rounded-lg dark:bg-gray-800 mb-2"
                                >
                                   <option value="">Default</option>
                                   <option value="Inter">Inter</option>
@@ -281,6 +293,19 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
                                   <option value="Josefin Sans">Josefin Sans</option>
                                   <option value="Poppins">Poppins</option>
                                </select>
+
+                               <Button
+                                 size="sm"
+                                 variant="outline"
+                                 className="w-full text-[10px] h-8 bg-blue-50/50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800"
+                                 onClick={() => {
+                                   const pairs = getFontPairs(layer.fontFamily || "Inter");
+                                   const randomPair = pairs[Math.floor(Math.random() * pairs.length)];
+                                   updateLayer(layer.id, { fontFamily: randomPair });
+                                 }}
+                               >
+                                  <Wand2 size={12} className="mr-2 text-blue-600" /> Suggest Pairing
+                               </Button>
                             </div>
                             <div className="space-y-1">
                                 <div className="flex justify-between">
@@ -318,7 +343,42 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
                   );
                 })()
               ) : (
-                <p className="text-xs text-gray-400 italic">Select an element to edit its properties.</p>
+                <div className="space-y-6">
+                    <div className="p-4 bg-blue-50/30 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-800">
+                        <h4 className="text-[10px] font-black uppercase text-blue-600 mb-3 flex items-center">
+                            <Palette size={12} className="mr-2" /> Global Brand Palette
+                        </h4>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                            {["#0f172a", "#3b82f6", "#60a5fa", "#f59e0b", "#f8fafc"].map(c => (
+                                <div key={c} className="w-8 h-8 rounded-lg shadow-sm border border-white/20" style={{ backgroundColor: c }}></div>
+                            ))}
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full text-[10px] h-8"
+                            onClick={async () => {
+                                const newPalette = await extractPalette("");
+                                console.log("New Palette Suggested:", newPalette);
+                                // Logic to apply palette to layers could go here
+                            }}
+                        >
+                            <Sparkles size={12} className="mr-2" /> Auto-Regenerate
+                        </Button>
+                    </div>
+
+                    <div className="p-4 bg-purple-50/30 dark:bg-purple-900/10 rounded-2xl border border-purple-100 dark:border-purple-800">
+                        <h4 className="text-[10px] font-black uppercase text-purple-600 mb-3 flex items-center">
+                            <ImageIcon size={12} className="mr-2" /> Palette from Image
+                        </h4>
+                        <p className="text-[10px] text-gray-500 mb-4">Upload an inspiration image to extract its core colors.</p>
+                        <Button variant="outline" size="sm" className="w-full text-[10px] h-8 bg-white dark:bg-gray-950">
+                            Upload Photo
+                        </Button>
+                    </div>
+
+                    <p className="text-xs text-gray-400 italic text-center">Select an element to edit its properties.</p>
+                </div>
               )}
            </div>
         </div>

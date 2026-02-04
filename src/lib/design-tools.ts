@@ -8,16 +8,55 @@ export const typographyRecommendations = (industry: string) => {
   return recommendations[industry] || ["Inter", "System Sans-Serif"];
 };
 
+export const getFontPairs = (baseFont: string) => {
+  const pairs: Record<string, string[]> = {
+    "Inter": ["Playfair Display", "Roboto Mono", "Libre Baskerville"],
+    "Playfair Display": ["Inter", "Montserrat", "Open Sans"],
+    "Orbitron": ["Roboto Mono", "Inter", "Rajdhani"],
+    "Libre Baskerville": ["Montserrat", "Inter", "Josefin Sans"],
+    "Josefin Sans": ["Libre Baskerville", "Inter", "Lato"],
+    "Poppins": ["Open Sans", "Roboto Slab", "Lora"],
+  };
+  return pairs[baseFont] || ["Inter", "Montserrat", "Lato"];
+};
+
 export const extractPalette = async (logoUrl: string) => {
   // In production, use a library like 'colorthief'
   console.log(`Extracting palette from ${logoUrl}`);
-  return [
-    { name: "Brand Primary", hex: "#3b82f6" },
-    { name: "Brand Secondary", hex: "#1e40af" },
-    { name: "Brand Accent", hex: "#f59e0b" },
-    { name: "Neutral Dark", hex: "#0f172a" },
-    { name: "Neutral Light", hex: "#f8fafc" },
+  // Return different palettes based on "logoUrl" simulation or random
+  const palettes = [
+    [
+        { name: "Ocean Deep", hex: "#0f172a" },
+        { name: "Primary Blue", hex: "#3b82f6" },
+        { name: "Sky Light", hex: "#60a5fa" },
+        { name: "Accent Amber", hex: "#f59e0b" },
+        { name: "Paper White", hex: "#f8fafc" },
+    ],
+    [
+        { name: "Forest Dark", hex: "#064e3b" },
+        { name: "Nature Green", hex: "#10b981" },
+        { name: "Leaf Light", hex: "#6ee7b7" },
+        { name: "Earth Brown", hex: "#78350f" },
+        { name: "Mist White", hex: "#f0fdf4" },
+    ],
+    [
+        { name: "Midnight", hex: "#1e1b4b" },
+        { name: "Royal Purple", hex: "#7c3aed" },
+        { name: "Soft Pink", hex: "#f472b6" },
+        { name: "Golden Glow", hex: "#fbbf24" },
+        { name: "Cloud", hex: "#f5f3ff" },
+    ]
   ];
+  return palettes[Math.floor(Math.random() * palettes.length)];
+};
+
+export const generateLogoVariations = (layers: any[]) => {
+    // Generate light, dark, and monochrome versions of the layer set
+    const light = layers.map(l => ({ ...l, fill: l.fill === "#ffffff" ? "#f8fafc" : l.fill }));
+    const dark = layers.map(l => ({ ...l, fill: "#ffffff" })); // White on dark
+    const mono = layers.map(l => ({ ...l, fill: "#000000" })); // Black on white
+
+    return { light, dark, mono };
 };
 
 export const generateMockupSet = (logoUrl: string) => {

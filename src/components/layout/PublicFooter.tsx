@@ -48,9 +48,9 @@ export const PublicFooter = () => {
       <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col md:row justify-between items-center text-sm text-gray-500">
         <p>&copy; 2025 LogoAI Inc. All rights reserved.</p>
         <div className="flex space-x-6 mt-4 md:mt-0">
-          <span className="hover:text-blue-600 cursor-pointer">Twitter</span>
-          <span className="hover:text-blue-600 cursor-pointer">LinkedIn</span>
-          <span className="hover:text-blue-600 cursor-pointer">Instagram</span>
+          <a href="https://twitter.com" target="_blank" className="hover:text-blue-600 transition-colors">Twitter</a>
+          <a href="https://linkedin.com" target="_blank" className="hover:text-blue-600 transition-colors">LinkedIn</a>
+          <a href="https://instagram.com" target="_blank" className="hover:text-blue-600 transition-colors">Instagram</a>
         </div>
       </div>
     </footer>

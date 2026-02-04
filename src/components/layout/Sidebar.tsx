@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 const menuItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Create Logo", href: "/dashboard/create", icon: PenTool },
+  { name: "Name Generator", href: "/dashboard/naming", icon: Sparkles },
   { name: "My Gallery", href: "/dashboard/gallery", icon: ImageIcon },
   { name: "Branding Kit", href: "/dashboard/kit", icon: Briefcase },
   { name: "Social Kit", href: "/dashboard/social", icon: Share2 },
