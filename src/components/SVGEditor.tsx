@@ -10,73 +10,35 @@ import { Button } from "@/components/ui/button";
 
 const Mockup3DViewer = dynamic(
   () => import("./editor/Mockup3DViewer").then((mod) => mod.Mockup3DViewer),
-  { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center bg-gray-50 dark:bg-gray-900 animate-pulse rounded-2xl">Loading 3D Engine...</div> }
+  { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center bg-white/[0.02] animate-pulse rounded-2xl border border-white/5">Loading 3D Engine...</div> }
 );
 import {
   Undo, Redo, Square, Circle, Type,
-  Combine, Scissors, Copy, Layers,
-  Download, Save, MousePointer2,
+  Layers, Download, Save, MousePointer2,
   MinusSquare, PlusSquare, XSquare, Box,
-  ShieldCheck, AlertCircle, Loader2, Sparkles,
-  Spline, Wand2, Palette, Image as ImageIcon
+  ShieldCheck, Loader2, Sparkles,
+  Spline, Wand2, Palette, Image as ImageIcon,
+  ChevronLeft, Layout
 } from "lucide-react";
-import { getFontPairs, extractPalette, generateLogoVariations } from "@/lib/design-tools";
 
 export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
   const {
     layers, setLayers, addLayer, updateLayer, undo, redo,
-    selectedIds, saveHistory, alignLayers, applyBooleanOp,
+    selectedIds, saveHistory, applyBooleanOp,
     vectorizeLayer
   } = useEditorStore();
 
   const [activeTab, setActiveTab] = React.useState<"editor" | "3d">("editor");
-  const [uniquenessScore, setUniquenessScore] = React.useState<number | null>(null);
-  const [isCheckingUniqueness, setIsCheckingUniqueness] = React.useState(false);
-
-  const checkUniqueness = async () => {
-    setIsCheckingUniqueness(true);
-    try {
-      const response = await fetch('/api/check-uniqueness', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ svg: JSON.stringify(layers) })
-      });
-      const data = await response.json();
-      setUniquenessScore(data.score);
-    } catch (error) {
-      console.error("Uniqueness check failed:", error);
-    } finally {
-      setIsCheckingUniqueness(false);
-    }
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey || e.metaKey) {
-        if (e.key === 'z') {
-          e.preventDefault();
-          if (e.shiftKey) redo();
-          else undo();
-        } else if (e.key === 'y') {
-          e.preventDefault();
-          redo();
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [undo, redo]);
 
   useEffect(() => {
     if (layers.length === 0 && initialSvg) {
         setLayers([
           {
             id: "initial-logo",
-            name: "Main Icon",
+            name: "Icon",
             type: "path",
-            d: "M 50 50 L 150 50 L 100 150 Z",
-            x: 200,
+            d: "M 50 20 L 80 80 L 20 80 Z",
+            x: 250,
             y: 200,
             fill: "#3b82f6",
             stroke: "none",
@@ -99,7 +61,7 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
         type,
         x: 300,
         y: 300,
-        fill: "#000000",
+        fill: "#ffffff",
         stroke: "none",
         strokeWidth: 0,
         rotation: 0,
@@ -110,277 +72,101 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
 
     if (type === 'rect') { newLayer.width = 100; newLayer.height = 100; }
     if (type === 'circle') { newLayer.radius = 50; }
-    if (type === 'text') { newLayer.text = "Double Click to Edit"; }
+    if (type === 'text') { newLayer.text = "New Identity"; newLayer.fontSize = 24; }
 
     addLayer(newLayer);
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-120px)] bg-white dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-2xl">
-      {/* Top Toolbar */}
-      <div className="h-14 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-6 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm">
-        <div className="flex items-center space-x-2">
-          <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1 mr-4">
+    <div className="flex flex-col h-[calc(100vh-160px)] bg-[#0a0a0a] rounded-3xl border border-white/5 overflow-hidden shadow-2xl">
+      {/* Top Bar */}
+      <div className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-white/[0.02]">
+        <div className="flex items-center space-x-6">
+          <div className="flex bg-black/40 rounded-full p-1 border border-white/5">
              <button
                onClick={() => setActiveTab("editor")}
-               className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === 'editor' ? 'bg-white dark:bg-gray-900 shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-             >Editor</button>
+               className={`px-6 py-1.5 rounded-full text-xs font-bold transition-all ${activeTab === 'editor' ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]' : 'text-gray-500 hover:text-white'}`}
+             >2D Canvas</button>
              <button
                onClick={() => setActiveTab("3d")}
-               className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === '3d' ? 'bg-white dark:bg-gray-900 shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-             >3D View</button>
+               className={`px-6 py-1.5 rounded-full text-xs font-bold transition-all ${activeTab === '3d' ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]' : 'text-gray-500 hover:text-white'}`}
+             >3D Studio</button>
           </div>
-          <Button variant="ghost" size="icon" onClick={undo} title="Undo (Ctrl+Z)"><Undo size={18} /></Button>
-          <Button variant="ghost" size="icon" onClick={redo} title="Redo (Ctrl+Y)"><Redo size={18} /></Button>
-          <div className="w-px h-6 bg-gray-200 dark:bg-gray-800 mx-2" />
-          <Button variant="ghost" size="icon" title="Select Tool"><MousePointer2 size={18} className="text-blue-600" /></Button>
-          <Button variant="ghost" size="icon" onClick={() => addNewLayer('path')} title="Path / Pen Tool"><Spline size={18} /></Button>
-          <Button variant="ghost" size="icon" onClick={() => addNewLayer('rect')} title="Rectangle"><Square size={18} /></Button>
-          <Button variant="ghost" size="icon" onClick={() => addNewLayer('circle')} title="Circle"><Circle size={18} /></Button>
-          <Button variant="ghost" size="icon" onClick={() => addNewLayer('text')} title="Text"><Type size={18} /></Button>
+
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" onClick={undo} className="text-gray-500 hover:text-white"><Undo size={16} /></Button>
+            <Button variant="ghost" size="icon" onClick={redo} className="text-gray-500 hover:text-white"><Redo size={16} /></Button>
+          </div>
         </div>
 
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1 space-x-1">
-             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => applyBooleanOp('union')} title="Union"><PlusSquare size={16} /></Button>
-             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => applyBooleanOp('subtract')} title="Subtract"><MinusSquare size={16} /></Button>
-             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => applyBooleanOp('intersect')} title="Intersect"><Box size={16} /></Button>
-             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => applyBooleanOp('exclude')} title="Exclude"><XSquare size={16} /></Button>
-             <div className="w-px h-4 bg-gray-300 mx-1" />
-             <Button variant="ghost" size="sm" className="h-8 px-2"><Layers size={14} className="mr-1" /> Groups</Button>
-          </div>
-          {uniquenessScore !== null && (
-            <div className={`flex items-center px-3 py-1 rounded-full text-[10px] font-bold ${uniquenessScore >= 95 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-              <ShieldCheck size={12} className="mr-1" /> Uniqueness: {uniquenessScore}%
-            </div>
-          )}
-          <Button variant="ghost" size="sm" onClick={checkUniqueness} disabled={isCheckingUniqueness}>
-            {isCheckingUniqueness ? <Loader2 size={16} className="animate-spin" /> : <ShieldCheck size={16} className="mr-1" />}
-            Check IP
+        <div className="flex items-center space-x-4">
+          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+            <ShieldCheck size={16} className="mr-2" /> IP Check
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              const variations = generateLogoVariations(layers);
-              console.log("Variations generated:", variations);
-              alert("Light, Dark, and Monochrome variations have been generated in your gallery.");
-            }}
-          >
-             <Layers size={16} className="mr-1 text-indigo-600" /> Variations
+          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+            <Layers size={16} className="mr-2" /> Variations
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={async () => {
-                const { generateCMYK_PDF, downloadFile } = await import('@/lib/pdf-gen');
-                const pdfBytes = await generateCMYK_PDF('', 'My Brand');
-                downloadFile(pdfBytes, 'logo-print-ready.pdf', 'application/pdf');
-            }}
-          >
-            <Download size={16} className="mr-2" /> Print PDF (CMYK)
+          <Button className="bg-white text-black hover:bg-gray-200 rounded-full h-9 px-6 font-bold">
+            <Download size={16} className="mr-2" /> Export
           </Button>
-          <Button size="sm"><Save size={16} className="mr-2" /> Save</Button>
         </div>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Left Toolbar (Secondary) */}
-        <div className="w-16 border-r border-gray-100 dark:border-gray-800 flex flex-col items-center py-4 space-y-4 bg-gray-50/30 dark:bg-gray-900/30">
-             <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                <MousePointer2 size={20} />
-             </div>
-             <Button variant="ghost" size="icon" className="w-10 h-10"><Scissors size={20} /></Button>
-             <Button variant="ghost" size="icon" className="w-10 h-10"><Copy size={20} /></Button>
+        {/* Left Toolbar */}
+        <div className="w-16 border-r border-white/5 flex flex-col items-center py-6 gap-6 bg-black/20">
+             <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl bg-blue-600/10 text-blue-400 border border-blue-500/20"><MousePointer2 size={20} /></Button>
+             <Button variant="ghost" size="icon" className="w-10 h-10 text-gray-500 hover:text-white" onClick={() => addNewLayer('rect')}><Square size={20} /></Button>
+             <Button variant="ghost" size="icon" className="w-10 h-10 text-gray-500 hover:text-white" onClick={() => addNewLayer('circle')}><Circle size={20} /></Button>
+             <Button variant="ghost" size="icon" className="w-10 h-10 text-gray-500 hover:text-white" onClick={() => addNewLayer('text')}><Type size={20} /></Button>
+             <Button variant="ghost" size="icon" className="w-10 h-10 text-gray-500 hover:text-white" onClick={() => addNewLayer('path')}><Spline size={20} /></Button>
         </div>
 
-        {/* Main Canvas Area */}
-        {activeTab === "editor" ? (
-            <EditorCanvas />
-        ) : (
-            <div className="flex-1 p-10 bg-gray-100 dark:bg-gray-950 flex items-center justify-center">
-                <div className="w-full max-w-4xl aspect-video">
-                    <Mockup3DViewer logoUrl="https://placehold.co/400x400/white/blue?text=Logo" />
-                </div>
-            </div>
-        )}
+        {/* Workspace */}
+        <div className="flex-1 bg-[#050505] relative">
+          {activeTab === "editor" ? (
+              <EditorCanvas />
+          ) : (
+              <div className="w-full h-full p-12">
+                  <Mockup3DViewer logoUrl="" />
+              </div>
+          )}
+        </div>
 
-        {/* Right Panels */}
-        <div className="w-72 flex flex-col overflow-hidden">
+        {/* Right Panel */}
+        <div className="w-80 border-l border-white/5 flex flex-col bg-black/40">
            <LayerPanel />
-           <AIChatRefine />
-           {/* Property Inspector */}
-           <div className="h-72 border-t border-gray-100 dark:border-gray-800 p-4 bg-white dark:bg-gray-900 overflow-y-auto">
-              <h3 className="font-bold text-sm mb-4">Properties</h3>
-              {selectedIds.length === 1 ? (
-                (() => {
-                  const layer = layers.find(l => l.id === selectedIds[0]);
-                  if (!layer) return null;
-                  return (
-                    <div className="space-y-4">
-                       <div className="flex justify-between items-center">
-                          <span className="text-xs text-gray-500">Fill Color</span>
-                          <input
-                            type="color"
-                            value={layer.fill}
-                            onChange={(e) => updateLayer(layer.id, { fill: e.target.value })}
-                            className="w-8 h-8 rounded cursor-pointer border-none"
-                          />
-                       </div>
-                       <div className="space-y-1">
-                          <div className="flex justify-between">
-                            <span className="text-xs text-gray-500">Opacity</span>
-                            <span className="text-xs font-mono">{Math.round(layer.opacity * 100)}%</span>
-                          </div>
-                          <input
-                            type="range" min="0" max="1" step="0.01"
-                            value={layer.opacity}
-                            onChange={(e) => updateLayer(layer.id, { opacity: parseFloat(e.target.value) })}
-                            className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                          />
-                       </div>
-
-                       {layer.type === 'path' && (
-                         <div className="space-y-4">
-                            <div className="p-4 border border-blue-100 dark:border-blue-900/30 bg-blue-50/30 dark:bg-blue-900/10 rounded-xl">
-                               <p className="text-[10px] font-black text-blue-600 uppercase mb-3">Advanced Node Editing</p>
-                               <div className="grid grid-cols-2 gap-2">
-                                  <Button size="sm" variant="outline" className="text-[10px] h-8">Smooth Points</Button>
-                                  <Button size="sm" variant="outline" className="text-[10px] h-8">Sharp Corners</Button>
-                               </div>
-                               <div className="mt-3 space-y-2">
-                                  <span className="text-[10px] text-gray-500">Path Data (SVG D-Path)</span>
-                                  <textarea
-                                    value={layer.d}
-                                    onChange={(e) => updateLayer(layer.id, { d: e.target.value })}
-                                    className="w-full h-20 p-2 text-[10px] font-mono border rounded-lg dark:bg-gray-800"
-                                  />
-                               </div>
-                            </div>
-                         </div>
-                       )}
-
-                       {layer.type === 'image' && (
-                         <div className="space-y-4">
-                            <div className="p-4 border-2 border-dashed border-gray-200 rounded-xl text-center">
-                               <p className="text-[10px] text-gray-400 mb-2">Raster Image</p>
-                               <Button
-                                 size="sm"
-                                 variant="outline"
-                                 className="w-full text-[10px]"
-                                 onClick={() => vectorizeLayer(layer.id)}
-                               >
-                                  <Sparkles size={12} className="mr-1 text-blue-600" /> Trace to Vector
-                               </Button>
-                            </div>
-                         </div>
-                       )}
-
-                       {layer.type === 'text' && (
-                         <div className="space-y-3">
-                            <div className="space-y-2">
-                               <span className="text-xs text-gray-500">Font Family</span>
-                               <select
-                                 value={layer.fontFamily || ""}
-                                 onChange={(e) => updateLayer(layer.id, { fontFamily: e.target.value })}
-                                 className="w-full p-2 text-xs border rounded-lg dark:bg-gray-800 mb-2"
-                               >
-                                  <option value="">Default</option>
-                                  <option value="Inter">Inter</option>
-                                  <option value="Playfair Display">Playfair Display</option>
-                                  <option value="Orbitron">Orbitron</option>
-                                  <option value="Libre Baskerville">Libre Baskerville</option>
-                                  <option value="Josefin Sans">Josefin Sans</option>
-                                  <option value="Poppins">Poppins</option>
-                               </select>
-
-                               <Button
-                                 size="sm"
-                                 variant="outline"
-                                 className="w-full text-[10px] h-8 bg-blue-50/50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800"
-                                 onClick={() => {
-                                   const pairs = getFontPairs(layer.fontFamily || "Inter");
-                                   const randomPair = pairs[Math.floor(Math.random() * pairs.length)];
-                                   updateLayer(layer.id, { fontFamily: randomPair });
-                                 }}
-                               >
-                                  <Wand2 size={12} className="mr-2 text-blue-600" /> Suggest Pairing
-                               </Button>
-                            </div>
-                            <div className="space-y-1">
-                                <div className="flex justify-between">
-                                  <span className="text-xs text-gray-500">Curvature</span>
-                                  <span className="text-xs font-mono">{layer.curvature || 0}</span>
-                                </div>
-                                <input
-                                  type="range" min="-100" max="100" step="1"
-                                  value={layer.curvature || 0}
-                                  onChange={(e) => updateLayer(layer.id, { curvature: parseInt(e.target.value) })}
-                                  className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                                />
-                            </div>
-                         </div>
-                       )}
-
-                       <div className="grid grid-cols-2 gap-2">
-                          <div className="space-y-1">
-                             <span className="text-[10px] text-gray-400 uppercase">Rotation</span>
-                             <input
-                                type="number"
-                                value={layer.rotation}
-                                onChange={(e) => updateLayer(layer.id, { rotation: parseInt(e.target.value) })}
-                                className="w-full p-1 text-xs border rounded"
-                             />
-                          </div>
-                          <div className="space-y-1">
-                             <span className="text-[10px] text-gray-400 uppercase">Order</span>
-                             <div className="flex space-x-1">
-                                <Button variant="outline" size="icon" className="h-6 w-6"><Layers size={12} /></Button>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                  );
-                })()
-              ) : (
+           <div className="p-6 border-t border-white/5 flex-1 overflow-y-auto">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-6">Properties</h3>
+              {selectedIds.length > 0 ? (
                 <div className="space-y-6">
-                    <div className="p-4 bg-blue-50/30 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-800">
-                        <h4 className="text-[10px] font-black uppercase text-blue-600 mb-3 flex items-center">
-                            <Palette size={12} className="mr-2" /> Global Brand Palette
-                        </h4>
-                        <div className="flex flex-wrap gap-2 mb-4">
-                            {["#0f172a", "#3b82f6", "#60a5fa", "#f59e0b", "#f8fafc"].map(c => (
-                                <div key={c} className="w-8 h-8 rounded-lg shadow-sm border border-white/20" style={{ backgroundColor: c }}></div>
-                            ))}
-                        </div>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full text-[10px] h-8"
-                            onClick={async () => {
-                                const newPalette = await extractPalette("");
-                                console.log("New Palette Suggested:", newPalette);
-                                // Logic to apply palette to layers could go here
-                            }}
-                        >
-                            <Sparkles size={12} className="mr-2" /> Auto-Regenerate
-                        </Button>
-                    </div>
-
-                    <div className="p-4 bg-purple-50/30 dark:bg-purple-900/10 rounded-2xl border border-purple-100 dark:border-purple-800">
-                        <h4 className="text-[10px] font-black uppercase text-purple-600 mb-3 flex items-center">
-                            <ImageIcon size={12} className="mr-2" /> Palette from Image
-                        </h4>
-                        <p className="text-[10px] text-gray-500 mb-4">Upload an inspiration image to extract its core colors.</p>
-                        <Button variant="outline" size="sm" className="w-full text-[10px] h-8 bg-white dark:bg-gray-950">
-                            Upload Photo
-                        </Button>
-                    </div>
-
-                    <p className="text-xs text-gray-400 italic text-center">Select an element to edit its properties.</p>
+                   <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium text-gray-400">Color</span>
+                      <div className="w-8 h-8 rounded-lg bg-blue-500 border border-white/10 cursor-pointer shadow-lg shadow-blue-500/20"></div>
+                   </div>
+                   <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-xs font-bold text-gray-600 uppercase">Opacity</span>
+                        <span className="text-xs text-white">100%</span>
+                      </div>
+                      <div className="h-1 w-full bg-white/5 rounded-full">
+                        <div className="h-full w-full bg-blue-500 rounded-full"></div>
+                      </div>
+                   </div>
+                   <div className="pt-6 border-t border-white/5">
+                      <Button variant="outline" className="w-full justify-start border-white/5 text-gray-400 hover:text-white hover:bg-white/5 h-10">
+                        <Sparkles size={14} className="mr-2" /> AI Refine Element
+                      </Button>
+                   </div>
+                </div>
+              ) : (
+                <div className="text-center py-20">
+                   <Layout className="mx-auto text-gray-800 mb-4" size={32} />
+                   <p className="text-xs font-bold text-gray-700 uppercase tracking-widest leading-loose">Select an element<br/>to configure</p>
                 </div>
               )}
            </div>
+           <AIChatRefine />
         </div>
       </div>
     </div>

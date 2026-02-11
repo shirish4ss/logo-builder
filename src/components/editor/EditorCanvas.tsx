@@ -134,17 +134,27 @@ export const EditorCanvas = () => {
 
           {/* Selection Overlays */}
           {layers.filter(l => selectedIds.includes(l.id)).map(l => (
+            <React.Fragment key={`selection-${l.id}`}>
               <rect
-                key={`outline-${l.id}`}
-                x={l.x - 25}
-                y={l.y - 25}
-                width={50}
-                height={50}
+                x={l.x - (l.width ? l.width/2 : 25) - 5}
+                y={l.y - (l.height ? l.height/2 : 25) - 5}
+                width={(l.width || 50) + 10}
+                height={(l.height || 50) + 10}
                 fill="none"
                 stroke="#3b82f6"
                 strokeWidth="1"
                 strokeDasharray="4"
               />
+              {/* Pro Node Editor Mockup */}
+              {l.type === 'path' && (
+                <g>
+                  <circle cx={l.x - 20} cy={l.y - 20} r={3} fill="white" stroke="#3b82f6" />
+                  <circle cx={l.x + 20} cy={l.y + 20} r={3} fill="white" stroke="#3b82f6" />
+                  <circle cx={l.x - 20} cy={l.y + 20} r={3} fill="white" stroke="#3b82f6" />
+                  <circle cx={l.x + 20} cy={l.y - 20} r={3} fill="white" stroke="#3b82f6" />
+                </g>
+              )}
+            </React.Fragment>
           ))}
         </svg>
 

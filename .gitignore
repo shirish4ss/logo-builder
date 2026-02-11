@@ -37,4 +37,5 @@ next-env.d.ts
 /prisma/*.db-journal
 
 # logs
-server.log
+*.log
+verification/

@@ -2,13 +2,12 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, ChevronLeft, Upload, CheckCircle2, Type } from "lucide-react";
-import { getFontPairingsByStyle } from "@/lib/fonts";
+import { ChevronRight, ChevronLeft, Upload, CheckCircle2, Sparkles } from "lucide-react";
 
 const steps = [
-  { id: 1, name: "Business Details", desc: "Tell us about your brand" },
-  { id: 2, name: "Logo Style", desc: "Choose your preferred aesthetic" },
-  { id: 3, name: "Samples & Finalize", desc: "Upload references and generate" },
+  { id: 1, name: "Identity", desc: "Brand details" },
+  { id: 2, name: "Aesthetic", desc: "Style & Feel" },
+  { id: 3, name: "Finalize", desc: "References" },
 ];
 
 export const LogoWizard = ({ onFinish }: { onFinish?: (data: any) => void }) => {
@@ -30,163 +29,127 @@ export const LogoWizard = ({ onFinish }: { onFinish?: (data: any) => void }) => 
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-10">
+    <div className="max-w-3xl mx-auto py-20 px-6">
       {/* Stepper */}
-      <div className="flex justify-between mb-12">
+      <div className="flex justify-between mb-20 relative">
+        <div className="absolute top-5 left-0 w-full h-px bg-white/5 -z-10"></div>
         {steps.map((step) => (
           <div key={step.id} className="flex flex-col items-center flex-1">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold mb-2 transition-colors ${
-              currentStep >= step.id ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-500"
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold mb-4 transition-all duration-500 border-2 ${
+              currentStep >= step.id ? "bg-blue-600 border-blue-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.5)]" : "bg-[#050505] border-white/10 text-gray-500"
             }`}>
-              {currentStep > step.id ? <CheckCircle2 size={20} /> : step.id}
+              {currentStep > step.id ? <CheckCircle2 size={18} /> : step.id}
             </div>
-            <p className={`text-sm font-medium ${currentStep >= step.id ? "text-gray-900" : "text-gray-400"}`}>{step.name}</p>
-            <p className="text-xs text-gray-400">{step.desc}</p>
+            <p className={`text-xs font-bold uppercase tracking-widest ${currentStep >= step.id ? "text-white" : "text-gray-600"}`}>{step.name}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+      <div className="glass-card p-12 border-white/5 bg-white/[0.02]">
         {currentStep === 1 && (
-          <div className="space-y-6">
-            <h3 className="text-2xl font-bold text-gray-900">Let&apos;s start with the basics</h3>
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Business Name</label>
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-3xl font-bold text-white mb-2">Core Identity</h3>
+              <p className="text-gray-400">Tell us the name that will define your brand.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Business Name</label>
                 <input
                   type="text"
                   name="businessName"
                   value={formData.businessName}
                   onChange={handleChange}
-                  placeholder="e.g. InnovateX"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  placeholder="e.g. Nexus"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Slogan (Optional)</label>
+              <div className="space-y-3">
+                <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Slogan</label>
                 <input
                   type="text"
                   name="slogan"
                   value={formData.slogan}
                   onChange={handleChange}
-                  placeholder="e.g. The Future of Tech"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  placeholder="e.g. Elevate Reality"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
                 />
               </div>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Industry</label>
-              <select
-                name="industry"
-                value={formData.industry}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              >
-                <option value="">Select an industry</option>
-                <option value="tech">Technology</option>
-                <option value="fashion">Fashion</option>
-                <option value="food">Food & Beverage</option>
-                <option value="health">Health & Wellness</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Tell us more about what you do</label>
+            <div className="space-y-3">
+              <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Mission</label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
                 rows={4}
-                placeholder="Briefly describe your business goals and values..."
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                placeholder="What is the soul of your brand?"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors resize-none"
               ></textarea>
             </div>
           </div>
         )}
 
         {currentStep === 2 && (
-          <div className="space-y-6">
-            <h3 className="text-2xl font-bold text-gray-900">Choose a Design Direction</h3>
-            <p className="text-sm text-gray-500">Select one of our &quot;Master&apos;s Touch&quot; premium styles for better AI generation.</p>
-            <div className="grid grid-cols-3 gap-4">
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-3xl font-bold text-white mb-2">Visual Aesthetic</h3>
+              <p className="text-gray-400">Choose a direction that resonates with your vision.</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {[
-                { name: "Swiss Minimalist", desc: "Helvetica inspired" },
-                { name: "Abstract Modern", desc: "Fluid gradients" },
-                { name: "Paul Rand inspired", desc: "Geometric symbols" },
-                { name: "Cyber-Future", desc: "Neon & Tech-noir" },
-                { name: "Vintage Scribe", desc: "Elegant calligraphy" },
-                { name: "Bauhaus", desc: "Primary forms" }
+                "Minimalist", "Futuristic", "Handcrafted", "Bold", "Elegant", "Playful"
               ].map((style) => (
                 <div
-                  key={style.name}
-                  onClick={() => setFormData({ ...formData, stylePreference: style.name })}
+                  key={style}
+                  onClick={() => setFormData({ ...formData, stylePreference: style })}
                   className={`p-6 border-2 rounded-2xl cursor-pointer transition-all ${
-                    formData.stylePreference === style.name ? "border-blue-600 bg-blue-50 shadow-inner" : "border-gray-100 hover:border-blue-200 bg-white"
+                    formData.stylePreference === style ? "border-blue-600 bg-blue-600/10" : "border-white/5 bg-white/5 hover:border-white/10"
                   }`}
                 >
-                  <div className="w-12 h-12 bg-gray-200 rounded-lg mb-3 mx-auto"></div>
-                  <p className="font-bold text-gray-800 text-sm text-center">{style.name}</p>
-                  <p className="text-[10px] text-gray-400 text-center">{style.desc}</p>
+                  <p className="font-bold text-white text-sm text-center">{style}</p>
                 </div>
               ))}
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Preferred Colors</label>
-              <input
-                type="text"
-                name="colorPreference"
-                value={formData.colorPreference}
-                onChange={handleChange}
-                placeholder="e.g. Blue and White, Pastel tones"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              />
             </div>
           </div>
         )}
 
         {currentStep === 3 && (
-          <div className="space-y-6">
-            <h3 className="text-2xl font-bold text-gray-900">Almost there!</h3>
-            <div className="border-2 border-dashed border-gray-300 rounded-2xl p-10 text-center space-y-4">
-              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto text-blue-600">
-                <Upload size={32} />
-              </div>
-              <div>
-                <p className="text-lg font-bold text-gray-900">Upload Reference Logos</p>
-                <p className="text-sm text-gray-500">Drag and drop or click to browse</p>
-              </div>
-              <input type="file" className="hidden" id="file-upload" multiple />
-              <Button variant="outline" onClick={() => document.getElementById('file-upload')?.click()}>
-                Choose Files
-              </Button>
+          <div className="space-y-8 text-center">
+            <div className="w-20 h-20 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto text-blue-400 mb-6">
+              <Sparkles size={40} />
             </div>
-            <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-              <p className="text-sm text-blue-800">
-                <strong>Pro Tip:</strong> AI works best when you provide specific industry keywords and a clear vision of your brand&apos;s personality.
-              </p>
+            <div>
+              <h3 className="text-3xl font-bold text-white mb-2">Ready for Genesis</h3>
+              <p className="text-gray-400">Our AI is ready to synthesize your brand identity.</p>
+            </div>
+            <div className="border-2 border-dashed border-white/10 rounded-3xl p-12 hover:border-blue-500/50 transition-colors cursor-pointer group">
+              <Upload className="mx-auto text-gray-600 group-hover:text-blue-400 transition-colors mb-4" size={32} />
+              <p className="text-sm font-bold text-gray-500 uppercase tracking-widest">Drop references here</p>
             </div>
           </div>
         )}
 
-        <div className="flex justify-between mt-10">
+        <div className="flex justify-between mt-12 pt-8 border-t border-white/5">
           <Button
             variant="ghost"
             onClick={prevStep}
-            className={`${currentStep === 1 ? "invisible" : "visible"}`}
+            className={`text-gray-500 hover:text-white ${currentStep === 1 ? "invisible" : "visible"}`}
           >
-            <ChevronLeft size={20} className="mr-2" /> Back
+            <ChevronLeft size={18} className="mr-2" /> Back
           </Button>
           <Button
             onClick={currentStep === 3 ? () => {
               if (onFinish) {
                 onFinish({
                   ...formData,
-                  suggestedLogo: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="#3b82f6" /><text x="50" y="55" font-family="Arial" font-size="12" fill="white" text-anchor="middle">LOGO</text></svg>'
+                  suggestedLogo: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#050505"/><circle cx="50" cy="50" r="30" stroke="#3b82f6" stroke-width="2" fill="none" /><text x="50" y="55" font-family="Inter" font-size="10" fill="white" text-anchor="middle" font-weight="bold">BRAND</text></svg>'
                 });
               }
             } : nextStep}
-            className="px-8"
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-10 h-12 font-bold transition-all transform hover:scale-105"
           >
-            {currentStep === 3 ? "Generate Logo Ideas" : "Next"} <ChevronRight size={20} className="ml-2" />
+            {currentStep === 3 ? "Generate Designs" : "Continue"} <ChevronRight size={18} className="ml-2" />
           </Button>
         </div>
       </div>

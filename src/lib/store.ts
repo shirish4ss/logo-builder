@@ -9,6 +9,7 @@ export interface Layer {
   text?: string;
   imageUrl?: string;
   fontFamily?: string;
+  fontSize?: number;
   curvature?: number; // 0 is flat, positive is arch up, negative is arch down
   x: number;
   y: number;

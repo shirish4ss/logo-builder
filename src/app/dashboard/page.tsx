@@ -1,79 +1,130 @@
 "use client";
 
-import React from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { PenTool, Image as ImageIcon, Briefcase, Share2, Star, Zap } from "lucide-react";
+import {
+  LayoutDashboard, Palette, Zap, Clock,
+  ArrowRight, Plus, Download, Share2
+} from "lucide-react";
 
 export default function DashboardOverview() {
+  const recentProjects = [
+    { id: 1, name: "Nexus Tech", type: "Tech Logo", date: "2 hours ago" },
+    { id: 2, name: "Green Leaf", type: "Organic Food", date: "Yesterday" },
+    { id: 3, name: "Skyline", type: "Real Estate", date: "3 days ago" },
+  ];
+
   return (
-    <div className="p-10 space-y-10">
-      <div className="flex justify-between items-center">
+    <div className="p-8 space-y-10">
+      {/* Header */}
+      <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Welcome back!</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">Ready to create your next award-winning logo?</p>
+          <h1 className="text-4xl font-bold text-white tracking-tight">Design Studio</h1>
+          <p className="text-slate-400 mt-2">Welcome back. Ready to create something legendary?</p>
         </div>
-        <Link href="/dashboard/create">
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-8 h-14 text-lg">
-            <PenTool className="mr-2" size={20} />
-            Create New Logo
-          </Button>
+        <Link
+          href="/dashboard/create"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all flex items-center gap-2 font-bold shadow-lg shadow-blue-500/20 active:scale-95"
+        >
+          <Plus size={20} />
+          New Brand
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {[
-          { title: "Recent Logos", value: "12", icon: ImageIcon, color: "bg-blue-500" },
-          { title: "Active Kits", value: "4", icon: Briefcase, color: "bg-purple-500" },
-          { title: "Total Shares", value: "85", icon: Share2, color: "bg-green-500" },
-        ].map((stat, i) => (
-          <div key={i} className="bg-white dark:bg-gray-900 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm">
-            <div className={`${stat.color} w-12 h-12 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-${stat.color.split('-')[1]}-500/20`}>
-              <stat.icon size={24} />
-            </div>
-            <p className="text-gray-500 dark:text-gray-400 font-medium">{stat.title}</p>
-            <p className="text-4xl font-bold text-gray-900 dark:text-white mt-1">{stat.value}</p>
+      {/* Stats/Quick Access */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[2rem] p-8 text-white relative overflow-hidden group">
+          <Zap className="absolute right-[-10px] top-[-10px] w-32 h-32 opacity-10 group-hover:scale-110 transition-transform" />
+          <p className="text-blue-100 font-medium">Active Plan</p>
+          <h2 className="text-3xl font-black mt-1">Pro Member</h2>
+          <Link href="/pricing" className="mt-6 inline-flex items-center gap-2 text-sm bg-white/20 backdrop-blur-md px-4 py-2 rounded-full hover:bg-white/30 transition-colors">
+            Manage Subscription <ArrowRight size={14} />
+          </Link>
+        </div>
+
+        <div className="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 text-white">
+          <p className="text-slate-400 font-medium">Generations Left</p>
+          <h2 className="text-3xl font-black mt-1">84 / 100</h2>
+          <div className="mt-6 h-2 bg-slate-800 rounded-full overflow-hidden">
+            <div className="h-full bg-blue-500 w-[84%]" />
           </div>
-        ))}
+        </div>
+
+        <div className="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 text-white">
+          <p className="text-slate-400 font-medium">Brand Assets</p>
+          <h2 className="text-3xl font-black mt-1">12 Files</h2>
+          <p className="text-slate-500 text-sm mt-4">SVG, PNG, and Branding Kits</p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white dark:bg-gray-900 p-10 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Your Best Designs</h2>
-            <Link href="/dashboard/gallery" className="text-blue-600 hover:text-blue-500 font-semibold text-sm">View All</Link>
+      {/* Main Content Area */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="flex justify-between items-center">
+            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+              <Clock className="text-blue-500" size={20} />
+              Recent Brands
+            </h3>
+            <button className="text-slate-400 hover:text-white text-sm">View All</button>
           </div>
-          <div className="grid grid-cols-2 gap-6">
-            {[1, 2].map((i) => (
-              <div key={i} className="aspect-square bg-gray-50 dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 flex items-center justify-center group cursor-pointer relative overflow-hidden">
-                <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/10 transition-colors"></div>
-                <ImageIcon className="text-gray-300 dark:text-gray-600" size={48} />
-                <div className="absolute top-4 right-4 bg-white dark:bg-gray-900 p-2 rounded-xl shadow-md">
-                   <Star className="text-yellow-400 fill-yellow-400" size={16} />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {recentProjects.map((project) => (
+              <motion.div
+                key={project.id}
+                whileHover={{ y: -5 }}
+                className="bg-slate-900 border border-slate-800 rounded-3xl p-6 group cursor-pointer"
+              >
+                <div className="aspect-square bg-slate-950 rounded-2xl mb-4 flex items-center justify-center border border-slate-800 group-hover:border-blue-500/50 transition-colors relative overflow-hidden">
+                   <Palette className="text-slate-800 w-20 h-20" />
+                   <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-              </div>
+                <h4 className="text-white font-bold">{project.name}</h4>
+                <p className="text-slate-500 text-xs mt-1">{project.type} • {project.date}</p>
+                <div className="flex gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button className="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white"><Download size={16} /></button>
+                  <button className="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white"><Share2 size={16} /></button>
+                  <button className="px-3 py-1 bg-blue-600 rounded-lg text-white text-xs font-bold ml-auto">Edit</button>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-10 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden flex flex-col justify-between">
-          <div className="relative z-10">
-            <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center mb-8">
-              <Zap size={28} />
-            </div>
-            <h2 className="text-3xl font-bold mb-4">Upgrade to Pro</h2>
-            <p className="text-blue-100 text-lg leading-relaxed max-w-sm">
-              Unlock unlimited AI generation, high-res exports, and team collaboration.
-            </p>
-          </div>
-          <div className="relative z-10 mt-10">
-             <Link href="/pricing">
-                <Button className="bg-white text-blue-600 hover:bg-blue-50 w-full h-14 rounded-xl font-bold text-lg">
-                  Explore Plans
-                </Button>
-             </Link>
-          </div>
-          <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+        <div className="space-y-8">
+           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8">
+              <h3 className="text-lg font-bold text-white mb-6">Quick Tools</h3>
+              <div className="space-y-4">
+                <Link href="/dashboard/kit" className="flex items-center gap-4 p-4 bg-slate-950 border border-slate-800 rounded-2xl hover:border-blue-500/50 transition-all group">
+                  <div className="p-3 bg-blue-500/10 rounded-xl text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                    <LayoutDashboard size={20} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-white">Brand Kit</p>
+                    <p className="text-[10px] text-slate-500">Generate guidelines</p>
+                  </div>
+                </Link>
+
+                <Link href="/dashboard/social" className="flex items-center gap-4 p-4 bg-slate-950 border border-slate-800 rounded-2xl hover:border-purple-500/50 transition-all group">
+                  <div className="p-3 bg-purple-500/10 rounded-xl text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors">
+                    <Share2 size={20} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-white">Social Media</p>
+                    <p className="text-[10px] text-slate-500">Post templates</p>
+                  </div>
+                </Link>
+              </div>
+           </div>
+
+           <div className="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4">
+                <div className="w-12 h-12 bg-blue-500/10 rounded-full blur-xl" />
+              </div>
+              <h3 className="text-white font-bold mb-2">Need Inspiration?</h3>
+              <p className="text-slate-400 text-xs leading-relaxed">Check out our community showcase to see what other designers are building with LogoAI.</p>
+              <button className="mt-6 text-sm text-blue-400 font-bold hover:underline">Explore Showcase →</button>
+           </div>
         </div>
       </div>
     </div>

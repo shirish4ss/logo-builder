@@ -1,80 +1,77 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Download, Share2, Instagram, Facebook, Twitter, Linkedin, ImageIcon } from "lucide-react";
+import { Download, Share2, Instagram, Facebook, Twitter, Linkedin, ImageIcon, Sparkles, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useStore } from "@/lib/store";
 
 export default function SocialMediaKitPage() {
-  const { currentProject } = useStore();
-
   const platforms = [
-    { name: "Instagram", icon: <Instagram />, sizes: ["Post (1080x1080)", "Story (1080x1920)", "Profile"] },
-    { name: "Facebook", icon: <Facebook />, sizes: ["Cover (820x312)", "Post (1200x630)", "Profile"] },
-    { name: "Twitter", icon: <Twitter />, sizes: ["Header (1500x500)", "Post (1200x675)", "Profile"] },
-    { name: "LinkedIn", icon: <Linkedin />, sizes: ["Cover (1584x396)", "Post (1200x1200)", "Profile"] },
+    { name: "Instagram", icon: <Instagram size={20} />, sizes: ["Square Feed", "Reels / Story", "Profile Icon"] },
+    { name: "X / Twitter", icon: <Twitter size={20} />, sizes: ["Header Banner", "Media Post", "Verified Avatar"] },
+    { name: "LinkedIn", icon: <Linkedin size={20} />, sizes: ["Company Cover", "Pulse Header", "Square Logo"] },
+    { name: "Facebook", icon: <Facebook size={20} />, sizes: ["Page Cover", "News Feed", "Group Header"] },
   ];
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex justify-between items-end mb-12">
+    <div className="space-y-12">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-4xl font-black mb-2">Social Media Kit</h1>
-          <p className="text-gray-500 font-medium text-lg">Auto-generated assets for your social presence.</p>
+          <h1 className="text-4xl font-bold tracking-tight text-white">Social Presence</h1>
+          <p className="text-gray-400 mt-2 text-lg font-medium">Platform-optimized assets, synthesized for your brand.</p>
         </div>
-        <Button size="lg" className="bg-blue-600 hover:bg-blue-700 rounded-2xl px-8 h-14">
-          <Download className="mr-2" size={20} /> Download All Assets
+        <Button size="lg" className="bg-white text-black hover:bg-gray-200 rounded-full px-8 h-11 font-bold transition-all">
+          <Download className="mr-2" size={18} /> Download Master Kit
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {platforms.map((platform, idx) => (
           <motion.div
             key={platform.name}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: idx * 0.1 }}
+            className="glass-card border-white/5 bg-white/[0.02] overflow-hidden group hover:bg-white/[0.04] transition-all"
           >
-            <Card className="rounded-[2.5rem] border-gray-100 dark:border-gray-800 overflow-hidden group">
-              <CardHeader className="p-8 pb-4">
-                <div className="w-12 h-12 bg-gray-50 dark:bg-gray-900 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                  {platform.icon}
-                </div>
-                <CardTitle className="text-2xl font-bold">{platform.name}</CardTitle>
-                <CardDescription>Generated for your brand</CardDescription>
-              </CardHeader>
-              <CardContent className="p-8 pt-0">
-                <div className="space-y-4">
-                  {platform.sizes.map((size) => (
-                    <div key={size} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-transparent hover:border-blue-500 transition-all cursor-pointer group/item">
-                      <div className="flex items-center space-x-3">
-                        <ImageIcon size={18} className="text-gray-400 group-hover/item:text-blue-500" />
-                        <span className="text-sm font-bold">{size}</span>
-                      </div>
-                      <Download size={16} className="text-gray-400 group-hover/item:text-blue-500" />
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <div className="p-8">
+              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                {platform.icon}
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">{platform.name}</h3>
+              <p className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-8 italic">Ready to export</p>
+
+              <div className="space-y-2">
+                {platform.sizes.map((size) => (
+                  <div key={size} className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group/item">
+                    <span className="text-xs font-medium text-gray-400 group-hover/item:text-white transition-colors">{size}</span>
+                    <Download size={14} className="text-gray-600 group-hover/item:text-blue-400 transition-colors" />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="h-1 bg-gradient-to-r from-blue-600 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
           </motion.div>
         ))}
       </div>
 
-      <div className="mt-16 bg-blue-600 rounded-[3rem] p-12 text-white relative overflow-hidden">
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="text-center md:text-left">
-            <h2 className="text-3xl font-black mb-4">Post Automation</h2>
-            <p className="text-blue-100 text-lg max-w-xl">
-              Connect your social accounts and our AI will automatically create on-brand posts using your logo and color palette.
+      <div className="glass-card p-12 border-white/5 bg-gradient-to-r from-blue-600/10 via-transparent to-transparent relative overflow-hidden">
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
+                <Globe size={18} />
+              </div>
+              <h2 className="text-2xl font-bold text-white tracking-tight">AI Post Engine</h2>
+            </div>
+            <p className="text-gray-400 text-lg font-medium leading-relaxed">
+              Connect your social stack. Our neural networks will automatically generate on-brand content using your visual DNA and voice.
             </p>
           </div>
-          <Button variant="secondary" className="bg-white text-blue-600 hover:bg-blue-50 rounded-2xl px-10 h-14 font-black">
-            Connect Accounts
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-12 h-14 font-bold shadow-2xl shadow-blue-600/40 transform hover:scale-105 transition-all">
+            Connect & Automate
           </Button>
         </div>
-        <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-96 h-full bg-blue-500/5 blur-[120px] -z-10"></div>
       </div>
     </div>
   );

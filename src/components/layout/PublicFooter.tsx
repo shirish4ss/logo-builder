@@ -1,56 +1,49 @@
 "use client";
 
 import Link from "next/link";
+import { Sparkles } from "lucide-react";
 
 export const PublicFooter = () => {
   return (
-    <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-20 px-10 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-        <div className="space-y-6">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-black text-sm">L</span>
+    <footer className="bg-[#050505] border-t border-white/5 py-32 px-6">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-20">
+        <div className="col-span-1 md:col-span-2 space-y-8">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+              <Sparkles className="text-white" size={24} />
             </div>
-            <span className="text-xl font-black dark:text-white">LogoAI</span>
+            <span className="text-2xl font-bold text-white tracking-tight">LogoAI</span>
           </div>
-          <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-sm">
-            Empowering the next generation of brands with award-winning AI-driven design tools.
+          <p className="text-gray-400 leading-relaxed text-lg max-w-sm">
+            The next generation of brand identity. Powered by artificial intelligence, designed for the future.
           </p>
         </div>
 
         <div>
-          <h4 className="font-bold mb-6 dark:text-white">Product</h4>
-          <ul className="space-y-4 text-sm text-gray-500 dark:text-gray-400">
-            <li><Link href="/features" className="hover:text-blue-600 transition-colors">Features</Link></li>
-            <li><Link href="/pricing" className="hover:text-blue-600 transition-colors">Pricing</Link></li>
-            <li><Link href="/showcase" className="hover:text-blue-600 transition-colors">Showcase</Link></li>
+          <h4 className="text-white font-bold mb-8">Product</h4>
+          <ul className="space-y-4 text-gray-400">
+            <li><Link href="/features" className="hover:text-blue-400 transition-colors">Features</Link></li>
+            <li><Link href="/pricing" className="hover:text-blue-400 transition-colors">Pricing</Link></li>
+            <li><Link href="/showcase" className="hover:text-blue-400 transition-colors">Showcase</Link></li>
           </ul>
         </div>
 
         <div>
-          <h4 className="font-bold mb-6 dark:text-white">Company</h4>
-          <ul className="space-y-4 text-sm text-gray-500 dark:text-gray-400">
-            <li><Link href="/about" className="hover:text-blue-600 transition-colors">About Us</Link></li>
-            <li><Link href="/careers" className="hover:text-blue-600 transition-colors">Careers</Link></li>
-            <li><Link href="/contact" className="hover:text-blue-600 transition-colors">Contact</Link></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="font-bold mb-6 dark:text-white">Legal</h4>
-          <ul className="space-y-4 text-sm text-gray-500 dark:text-gray-400">
-            <li><Link href="/privacy" className="hover:text-blue-600 transition-colors">Privacy Policy</Link></li>
-            <li><Link href="/terms" className="hover:text-blue-600 transition-colors">Terms of Service</Link></li>
+          <h4 className="text-white font-bold mb-8">Resources</h4>
+          <ul className="space-y-4 text-gray-400">
+            <li><Link href="/privacy" className="hover:text-blue-400 transition-colors">Privacy</Link></li>
+            <li><Link href="/terms" className="hover:text-blue-400 transition-colors">Terms</Link></li>
+            <li><Link href="/contact" className="hover:text-blue-400 transition-colors">Contact</Link></li>
           </ul>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col md:row justify-between items-center text-sm text-gray-500">
-        <p>&copy; 2025 LogoAI Inc. All rights reserved.</p>
-        <div className="flex space-x-6 mt-4 md:mt-0">
-          <a href="https://twitter.com" target="_blank" className="hover:text-blue-600 transition-colors">Twitter</a>
-          <a href="https://linkedin.com" target="_blank" className="hover:text-blue-600 transition-colors">LinkedIn</a>
-          <a href="https://instagram.com" target="_blank" className="hover:text-blue-600 transition-colors">Instagram</a>
+      <div className="max-w-7xl mx-auto mt-32 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-gray-500 text-sm">
+        <p>&copy; 2025 LogoAI Inc. Crafted for champions.</p>
+        <div className="flex space-x-8">
+          <Link href="#" className="hover:text-white transition-colors">Twitter</Link>
+          <Link href="#" className="hover:text-white transition-colors">Instagram</Link>
+          <Link href="#" className="hover:text-white transition-colors">LinkedIn</Link>
         </div>
       </div>
     </footer>
