@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useEditorStore, Layer } from "@/lib/store";
 import { EditorCanvas } from "./editor/EditorCanvas";
 import { LayerPanel } from "./editor/LayerPanel";
 import { AIChatRefine } from "./editor/AIChatRefine";
+import { ColorPicker } from "./editor/ColorPicker";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 
@@ -12,26 +13,25 @@ const Mockup3DViewer = dynamic(
   () => import("./editor/Mockup3DViewer").then((mod) => mod.Mockup3DViewer),
   { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center bg-white/[0.02] animate-pulse rounded-2xl border border-white/5">Loading 3D Engine...</div> }
 );
+
 import {
   Undo, Redo, Square, Circle, Type,
-  Layers, Download, Save, MousePointer2,
-  MinusSquare, PlusSquare, XSquare, Box,
-  ShieldCheck, Loader2, Sparkles,
-  Spline, Wand2, Palette, Image as ImageIcon,
-  ChevronLeft, Layout
+  Layers, Download, MousePointer2,
+  ShieldCheck, Sparkles,
+  Spline, Layout
 } from "lucide-react";
 
 export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
   const {
-    layers, setLayers, addLayer, updateLayer, undo, redo,
-    selectedIds, saveHistory, applyBooleanOp,
-    vectorizeLayer
+    layers, setLayers, addLayer, undo, redo,
+    selectedIds, saveHistory
   } = useEditorStore();
 
   const [activeTab, setActiveTab] = React.useState<"editor" | "3d">("editor");
 
   useEffect(() => {
     if (layers.length === 0 && initialSvg) {
+        // Simple SVG parsing logic or just use initial path
         setLayers([
           {
             id: "initial-logo",
@@ -77,8 +77,23 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
     addLayer(newLayer);
   };
 
+  const downloadSvg = () => {
+    const svgElement = document.querySelector('svg');
+    if (!svgElement) return;
+
+    const svgData = new XMLSerializer().serializeToString(svgElement);
+    const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    const svgUrl = URL.createObjectURL(svgBlob);
+    const downloadLink = document.createElement("a");
+    downloadLink.href = svgUrl;
+    downloadLink.download = "logo.svg";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
   return (
-    <div className="flex flex-col h-[calc(100vh-160px)] bg-[#0a0a0a] rounded-3xl border border-white/5 overflow-hidden shadow-2xl">
+    <div className="flex flex-col h-[calc(100vh-200px)] bg-[#0a0a0a] rounded-3xl border border-white/5 overflow-hidden shadow-2xl">
       {/* Top Bar */}
       <div className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-white/[0.02]">
         <div className="flex items-center space-x-6">
@@ -106,8 +121,11 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
           <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
             <Layers size={16} className="mr-2" /> Variations
           </Button>
-          <Button className="bg-white text-black hover:bg-gray-200 rounded-full h-9 px-6 font-bold">
-            <Download size={16} className="mr-2" /> Export
+          <Button
+            onClick={downloadSvg}
+            className="bg-white text-black hover:bg-gray-200 rounded-full h-9 px-6 font-bold"
+          >
+            <Download size={16} className="mr-2" /> Export SVG
           </Button>
         </div>
       </div>
@@ -127,7 +145,7 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
           {activeTab === "editor" ? (
               <EditorCanvas />
           ) : (
-              <div className="w-full h-full p-12">
+              <div className="w-full h-full">
                   <Mockup3DViewer logoUrl="" />
               </div>
           )}
@@ -140,10 +158,8 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
               <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-6">Properties</h3>
               {selectedIds.length > 0 ? (
                 <div className="space-y-6">
-                   <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-gray-400">Color</span>
-                      <div className="w-8 h-8 rounded-lg bg-blue-500 border border-white/10 cursor-pointer shadow-lg shadow-blue-500/20"></div>
-                   </div>
+                   <ColorPicker />
+
                    <div className="space-y-3">
                       <div className="flex justify-between">
                         <span className="text-xs font-bold text-gray-600 uppercase">Opacity</span>

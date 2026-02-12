@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const PublicNavbar = () => {
   return (
@@ -21,13 +22,17 @@ export const PublicNavbar = () => {
         </Link>
 
         <nav className="hidden md:flex items-center space-x-8">
-          <Link href="/features" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Features</Link>
-          <Link href="/showcase" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Showcase</Link>
-          <Link href="/pricing" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Pricing</Link>
+          <Link href="/features" className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors">Features</Link>
+          <Link href="/showcase" className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors">Showcase</Link>
+          <Link href="/pricing" className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors">Pricing</Link>
+
           <div className="w-px h-4 bg-white/10" />
-          <Link href="/login" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Login</Link>
+
+          <ThemeToggle />
+
+          <Link href="/login" className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors">Login</Link>
           <Link href="/register">
-            <Button className="bg-white text-black hover:bg-gray-200 font-bold rounded-full px-6 h-9 transition-all">
+            <Button className="bg-white text-black hover:bg-gray-200 text-xs font-black uppercase tracking-widest rounded-full px-8 h-10 transition-all shadow-xl shadow-white/5 hover:scale-105 active:scale-95">
               Join Free
             </Button>
           </Link>

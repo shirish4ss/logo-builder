@@ -47,13 +47,34 @@ export default function Home() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.3,
+        duration: 0.8
+      }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 1, ease: [0.16, 1, 0.3, 1] }
+    }
+  };
+
+  const floatingVariants = {
+    initial: { y: 0 },
+    animate: {
+      y: [0, -15, 0],
+      transition: {
+        duration: 5,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
   };
 
   return (
@@ -62,9 +83,14 @@ export default function Home() {
 
       <main>
         {/* Hero Section */}
-        <section className="relative pt-48 pb-32 px-6 overflow-hidden">
-          {/* Background Glows */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
+        <section className="relative pt-56 pb-40 px-6 overflow-hidden">
+          {/* Background Grain & Gradients */}
+          <div className="absolute inset-0 bg-[#050505] -z-20"></div>
+          <div className="absolute inset-0 opacity-[0.15] -z-10 pointer-events-none"
+               style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+
+          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[150px] -z-10 animate-pulse-slow"></div>
+          <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 rounded-full blur-[150px] -z-10 animate-pulse-slow"></div>
 
           <div className="max-w-7xl mx-auto text-center relative z-10">
             <motion.div
@@ -79,11 +105,10 @@ export default function Home() {
 
               <motion.h1
                 variants={itemVariants}
-                className="text-5xl md:text-7xl font-bold mb-8 tracking-tighter leading-[1.1]"
+                className="text-6xl md:text-[5.5rem] lg:text-[7.5rem] font-black mb-10 tracking-[-0.04em] leading-[0.9] text-white"
               >
-                Create your <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500">Legendary</span> <br />
-                brand identity.
+                Design the <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-br from-blue-400 via-indigo-300 to-purple-500 animate-gradient-x">Extraordinary.</span>
               </motion.h1>
 
               <motion.p
@@ -112,10 +137,10 @@ export default function Home() {
 
             {/* Dashboard Preview */}
             <motion.div
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-32 relative max-w-5xl mx-auto p-4 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-sm shadow-2xl"
+              initial={{ opacity: 0, y: 100, rotateX: 15 }}
+              animate={{ opacity: 1, y: 0, rotateX: 0 }}
+              transition={{ duration: 1.5, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-40 relative max-w-6xl mx-auto p-3 rounded-[3rem] bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_0_100px_rgba(0,0,0,0.5)] perspective-1000"
             >
               <div className="bg-[#0a0a0a] rounded-[2rem] overflow-hidden aspect-[16/10] group relative">
                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5"></div>

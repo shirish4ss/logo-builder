@@ -49,14 +49,14 @@ export default function PricingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-[#050505] transition-colors duration-300">
       <PublicNavbar />
 
-      <header className="py-10 px-10 flex justify-between items-center max-w-7xl mx-auto">
-        <div className="flex items-center space-x-4 bg-gray-100 dark:bg-gray-800 p-1.5 rounded-full">
-           <button onClick={() => setLocale('en')} className={`px-4 py-1.5 rounded-full text-xs font-bold ${locale === 'en' ? 'bg-white dark:bg-gray-700 shadow-sm' : 'text-gray-500'}`}>EN</button>
-           <button onClick={() => setLocale('hi')} className={`px-4 py-1.5 rounded-full text-xs font-bold ${locale === 'hi' ? 'bg-white dark:bg-gray-700 shadow-sm' : 'text-gray-500'}`}>हिन्दी</button>
-           <button onClick={() => setLocale('es')} className={`px-4 py-1.5 rounded-full text-xs font-bold ${locale === 'es' ? 'bg-white dark:bg-gray-700 shadow-sm' : 'text-gray-500'}`}>ES</button>
+      <header className="pt-40 pb-10 px-10 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto gap-8">
+        <div className="flex items-center space-x-4 bg-gray-100 dark:bg-white/5 border border-white/5 p-1.5 rounded-full backdrop-blur-md">
+           <button onClick={() => setLocale('en')} className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${locale === 'en' ? 'bg-white dark:bg-blue-600 text-black dark:text-white shadow-xl' : 'text-gray-500'}`}>English</button>
+           <button onClick={() => setLocale('hi')} className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${locale === 'hi' ? 'bg-white dark:bg-blue-600 text-black dark:text-white shadow-xl' : 'text-gray-500'}`}>हिन्दी</button>
+           <button onClick={() => setLocale('es')} className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${locale === 'es' ? 'bg-white dark:bg-blue-600 text-black dark:text-white shadow-xl' : 'text-gray-500'}`}>Español</button>
         </div>
         <div className="flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-full border border-blue-100 dark:border-blue-800">
            <Globe size={16} className="text-blue-600" />
