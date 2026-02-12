@@ -1,127 +1,111 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Users, CreditCard, BarChart3, Settings, ShieldCheck, Home,
   Cpu, Terminal, Palette, Landmark, Key, MessageSquare,
   Activity, Search, Mail, Image as ImageIcon, Power,
-  Database, Globe, Lock, History, Gift, Bell
+  Database, Lock, History, ChevronRight
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+
+const sidebarLinks = [
+  { group: "Core", links: [
+    { label: "Overview", href: "/admin/dashboard", icon: BarChart3 },
+    { label: "Users", href: "/admin/users", icon: Users },
+    { label: "Subscriptions", href: "/admin/subscriptions", icon: CreditCard },
+  ]},
+  { group: "AI Engine", links: [
+    { label: "Prompts", href: "/admin/prompts", icon: Terminal },
+    { label: "AI Models", href: "/admin/ai", icon: Cpu },
+    { label: "Styles", href: "/admin/styles", icon: Palette },
+  ]},
+  { group: "Operations", links: [
+    { label: "Finance", href: "/admin/finance", icon: Landmark },
+    { label: "Support", href: "/admin/support", icon: MessageSquare },
+    { label: "Audit Logs", href: "/admin/audit", icon: History },
+  ]},
+  { group: "System", links: [
+    { label: "SEO Engine", href: "/admin/seo", icon: Search },
+    { label: "Emails", href: "/admin/emails", icon: Mail },
+    { label: "Security", href: "/admin/security", icon: Lock },
+    { label: "Settings", href: "/admin/settings", icon: Settings },
+  ]}
+];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
   return (
-    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+    <div className="flex min-h-screen bg-[#050505] text-white selection:bg-blue-500/30">
       {/* Admin Sidebar */}
-      <aside className="w-72 bg-slate-900 text-white flex flex-col sticky top-0 h-screen overflow-y-auto scrollbar-hide">
-        <div className="p-6 border-b border-slate-800 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <ShieldCheck className="text-blue-400" />
-            <span className="font-bold text-xl">Admin Panel</span>
-          </div>
+      <aside className="w-80 bg-black/40 backdrop-blur-3xl border-r border-white/5 flex flex-col sticky top-0 h-screen overflow-y-auto z-50">
+        <div className="p-8 border-b border-white/5">
+          <Link href="/" className="flex items-center space-x-3 group">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-blue-600/20">
+              <ShieldCheck className="text-white" size={20} />
+            </div>
+            <div>
+              <p className="font-black text-xs uppercase tracking-widest">LogoAI</p>
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Command Center</p>
+            </div>
+          </Link>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1">
-          <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Core</p>
-          <Link href="/admin/dashboard" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <BarChart3 size={18} />
-            <span>Overview</span>
-          </Link>
-          <Link href="/admin/users" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Users size={18} />
-            <span>Users</span>
-          </Link>
-          <Link href="/admin/subscriptions" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <CreditCard size={18} />
-            <span>Subscriptions</span>
-          </Link>
-
-          <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-2">AI Management</p>
-          <Link href="/admin/prompts" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Terminal size={18} />
-            <span>Prompts</span>
-          </Link>
-          <Link href="/admin/ai" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Cpu size={18} />
-            <span>AI Models</span>
-          </Link>
-          <Link href="/admin/styles" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Palette size={18} />
-            <span>Styles</span>
-          </Link>
-
-          <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-2">Operations</p>
-          <Link href="/admin/finance" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Landmark size={18} />
-            <span>Finance</span>
-          </Link>
-          <Link href="/admin/support" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <MessageSquare size={18} />
-            <span>Support</span>
-          </Link>
-          <Link href="/admin/audit" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <History size={18} />
-            <span>Audit Logs</span>
-          </Link>
-
-          <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-2">System</p>
-          <Link href="/admin/settings" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Settings size={18} />
-            <span>Settings</span>
-          </Link>
-          <Link href="/admin/system" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Activity size={18} />
-            <span>Health</span>
-          </Link>
-          <Link href="/admin/media" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <ImageIcon size={18} />
-            <span>Media</span>
-          </Link>
-          <Link href="/admin/database" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Database size={18} />
-            <span>Database</span>
-          </Link>
-          <Link href="/admin/security" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Lock size={18} />
-            <span>Security</span>
-          </Link>
-          <Link href="/admin/api-access" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Key size={18} />
-            <span>API Access</span>
-          </Link>
-          <Link href="/admin/maintenance" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Power size={18} />
-            <span>Maintenance</span>
-          </Link>
-
-          <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-2">Growth</p>
-          <Link href="/admin/seo" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Search size={18} />
-            <span>SEO</span>
-          </Link>
-          <Link href="/admin/emails" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Mail size={18} />
-            <span>Emails</span>
-          </Link>
-          <Link href="/admin/analytics" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <BarChart3 size={18} />
-            <span>Analytics</span>
-          </Link>
-          <Link href="/admin/backups" className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-            <Database size={18} />
-            <span>Backups</span>
-          </Link>
+        <nav className="flex-1 p-6 space-y-8">
+          {sidebarLinks.map((group) => (
+            <div key={group.group} className="space-y-2">
+              <p className="px-4 text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4">{group.group}</p>
+              <div className="space-y-1">
+                {group.links.map((link) => {
+                  const isActive = pathname === link.href;
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={cn(
+                        "flex items-center justify-between group px-4 py-3 rounded-xl transition-all duration-300",
+                        isActive
+                          ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                          : "text-white/40 hover:text-white hover:bg-white/5"
+                      )}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <link.icon size={18} className={cn(isActive ? "text-white" : "text-white/20 group-hover:text-white")} />
+                        <span className="text-xs font-bold">{link.label}</span>
+                      </div>
+                      <ChevronRight size={14} className={cn("opacity-0 transition-all", isActive ? "opacity-100" : "group-hover:opacity-40 group-hover:translate-x-1")} />
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
-        <div className="p-4 border-t border-slate-800">
-          <Link href="/dashboard" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-800 transition-colors text-slate-400">
-            <Home size={20} />
-            <span>Back to App</span>
+        <div className="p-6 border-t border-white/5">
+          <Link href="/dashboard" className="flex items-center space-x-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-white/40 hover:text-white group">
+            <Home size={18} className="group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-bold uppercase tracking-widest">Exit Terminal</span>
           </Link>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
-        {children}
+      <main className="flex-1 bg-[#050505] relative">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[120px] -z-10" />
+        <div className="p-12">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {children}
+          </motion.div>
+        </div>
       </main>
     </div>
   );
