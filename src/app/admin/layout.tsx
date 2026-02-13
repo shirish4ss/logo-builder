@@ -7,7 +7,7 @@ import {
   Users, CreditCard, BarChart3, Settings, ShieldCheck, Home,
   Cpu, Terminal, Palette, Landmark, Key, MessageSquare,
   Activity, Search, Mail, Image as ImageIcon, Power,
-  Database, Lock, History, ChevronRight
+  Database, Lock, History, ChevronRight, Sparkles
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -17,21 +17,30 @@ const sidebarLinks = [
     { label: "Overview", href: "/admin/dashboard", icon: BarChart3 },
     { label: "Users", href: "/admin/users", icon: Users },
     { label: "Subscriptions", href: "/admin/subscriptions", icon: CreditCard },
+    { label: "Analytics", href: "/admin/analytics", icon: Activity },
   ]},
   { group: "AI Engine", links: [
     { label: "Prompts", href: "/admin/prompts", icon: Terminal },
+    { label: "Prompt Lab", href: "/admin/prompt-lab", icon: Sparkles },
     { label: "AI Models", href: "/admin/ai", icon: Cpu },
     { label: "Styles", href: "/admin/styles", icon: Palette },
+    { label: "Samples", href: "/admin/samples", icon: ImageIcon },
   ]},
   { group: "Operations", links: [
     { label: "Finance", href: "/admin/finance", icon: Landmark },
     { label: "Support", href: "/admin/support", icon: MessageSquare },
+    { label: "Media Manager", href: "/admin/media", icon: ImageIcon },
+    { label: "API Access", href: "/admin/api-access", icon: Key },
     { label: "Audit Logs", href: "/admin/audit", icon: History },
   ]},
   { group: "System", links: [
     { label: "SEO Engine", href: "/admin/seo", icon: Search },
     { label: "Emails", href: "/admin/emails", icon: Mail },
     { label: "Security", href: "/admin/security", icon: Lock },
+    { label: "Database", href: "/admin/database", icon: Database },
+    { label: "Backups", href: "/admin/backups", icon: History },
+    { label: "Maintenance", href: "/admin/maintenance", icon: Power },
+    { label: "System Health", href: "/admin/system", icon: Activity },
     { label: "Settings", href: "/admin/settings", icon: Settings },
   ]}
 ];

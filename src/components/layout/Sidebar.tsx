@@ -7,20 +7,51 @@ import { useSession, signOut } from "next-auth/react";
 import {
   LayoutDashboard, PenTool, Briefcase, Share2, Settings,
   History, Box, Shield, LogOut, Sparkles, Zap, ChevronRight,
-  ImageIcon, CreditCard
+  ImageIcon, CreditCard, Users, Heart, MessageSquare, BookOpen,
+  LifeBuoy, Link as LinkIcon, Bell, Gift, Users2, Info, Search
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const menuItems = [
-  { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Create Logo", href: "/dashboard/create", icon: PenTool, highlight: true },
-  { name: "Branding Kit", href: "/dashboard/kit", icon: Briefcase },
-  { name: "Social Kit", href: "/dashboard/social", icon: Share2 },
-  { name: "Mockups", href: "/dashboard/mockups", icon: Box },
-  { name: "Vectorizer", href: "/dashboard/vectorizer", icon: Zap },
-  { name: "My Gallery", href: "/dashboard/gallery", icon: ImageIcon },
-  { name: "Billing", href: "/dashboard/billing", icon: CreditCard },
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+const menuGroups = [
+  {
+    title: "Studio Menu",
+    items: [
+      { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
+      { name: "Create Logo", href: "/dashboard/create", icon: PenTool, highlight: true },
+      { name: "Branding Kit", href: "/dashboard/kit", icon: Briefcase },
+      { name: "Social Kit", href: "/dashboard/social", icon: Share2 },
+      { name: "Mockups", href: "/dashboard/mockups", icon: Box },
+      { name: "Vectorizer", href: "/dashboard/vectorizer", icon: Zap },
+      { name: "AI Naming", href: "/dashboard/naming", icon: Search },
+    ]
+  },
+  {
+    title: "Assets & Collab",
+    items: [
+      { name: "My Gallery", href: "/dashboard/gallery", icon: ImageIcon },
+      { name: "Favorites", href: "/dashboard/favorites", icon: Heart },
+      { name: "Team", href: "/dashboard/team", icon: Users2 },
+      { name: "Integrations", href: "/dashboard/integrations", icon: LinkIcon },
+    ]
+  },
+  {
+    title: "Growth & Support",
+    items: [
+      { name: "Rewards", href: "/dashboard/rewards", icon: Gift },
+      { name: "Referrals", href: "/dashboard/referrals", icon: Users },
+      { name: "Community", href: "/dashboard/community", icon: Users2 },
+      { name: "Help Center", href: "/dashboard/help", icon: LifeBuoy },
+      { name: "Support", href: "/dashboard/support", icon: MessageSquare },
+    ]
+  },
+  {
+    title: "Account",
+    items: [
+      { name: "Billing", href: "/dashboard/billing", icon: CreditCard },
+      { name: "Settings", href: "/dashboard/settings", icon: Settings },
+      { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
+    ]
+  }
 ];
 
 export const Sidebar = () => {
@@ -39,37 +70,41 @@ export const Sidebar = () => {
         </Link>
       </div>
 
-      <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto py-8">
-        <p className="px-4 text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4">Studio Menu</p>
-        {menuItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group relative",
-                isActive
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
-                  : "text-white/40 hover:text-white hover:bg-white/5"
-              )}
-            >
-              <div className="flex items-center space-x-3 relative z-10">
-                <item.icon size={18} className={cn(isActive ? "text-white" : "text-white/20 group-hover:text-white transition-colors")} />
-                <span className="text-xs font-bold">{item.name}</span>
-              </div>
+      <nav className="flex-1 px-4 space-y-8 overflow-y-auto py-8">
+        {menuGroups.map((group) => (
+          <div key={group.title} className="space-y-1.5">
+            <p className="px-4 text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4">{group.title}</p>
+            {group.items.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group relative",
+                    isActive
+                      ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                      : "text-white/40 hover:text-white hover:bg-white/5"
+                  )}
+                >
+                  <div className="flex items-center space-x-3 relative z-10">
+                    <item.icon size={18} className={cn(isActive ? "text-white" : "text-white/20 group-hover:text-white transition-colors")} />
+                    <span className="text-xs font-bold">{item.name}</span>
+                  </div>
 
-              <div className="flex items-center">
-                  {item.highlight && !isActive && (
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.6)]"></div>
-                  )}
-                  {isActive && (
-                    <ChevronRight size={14} className="text-white/50" />
-                  )}
-              </div>
-            </Link>
-          );
-        })}
+                  <div className="flex items-center">
+                      {item.highlight && !isActive && (
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.6)]"></div>
+                      )}
+                      {isActive && (
+                        <ChevronRight size={14} className="text-white/50" />
+                      )}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
       <div className="p-6 mt-auto border-t border-white/5 space-y-3 bg-black/20">

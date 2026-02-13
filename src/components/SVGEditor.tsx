@@ -18,7 +18,8 @@ import {
   Undo, Redo, Square, Circle, Type,
   Layers, Download, MousePointer2,
   ShieldCheck, Sparkles,
-  Spline, Layout
+  Spline, Layout,
+  Combine, Minus, Target, XSquare
 } from "lucide-react";
 
 export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
@@ -174,6 +175,18 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
                         <Sparkles size={14} className="mr-2" /> AI Refine Element
                       </Button>
                    </div>
+
+                   {selectedIds.length === 2 && (
+                     <div className="pt-6 border-t border-white/5 space-y-4">
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-500">Pathfinder (Boolean)</h4>
+                        <div className="grid grid-cols-4 gap-2">
+                           <Button variant="ghost" size="icon" className="bg-white/5 hover:bg-blue-600 hover:text-white border border-white/5" title="Unite"><Combine size={14} /></Button>
+                           <Button variant="ghost" size="icon" className="bg-white/5 hover:bg-blue-600 hover:text-white border border-white/5" title="Subtract"><Minus size={14} /></Button>
+                           <Button variant="ghost" size="icon" className="bg-white/5 hover:bg-blue-600 hover:text-white border border-white/5" title="Intersect"><Target size={14} /></Button>
+                           <Button variant="ghost" size="icon" className="bg-white/5 hover:bg-blue-600 hover:text-white border border-white/5" title="Exclude"><XSquare size={14} /></Button>
+                        </div>
+                     </div>
+                   )}
                 </div>
               ) : (
                 <div className="text-center py-20">
