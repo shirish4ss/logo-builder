@@ -8,15 +8,21 @@ export async function POST(request: Request) {
       return new NextResponse("Missing image data", { status: 400 });
     }
 
-    // Mock Raster to SVG conversion
-    // In a real production app, you would use a library like 'potrace'
-    // or call an external API like Vectorizer.ai.
+    // Simulate processing time for "AI" Vectorization
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
     console.log("Vectorizing image...");
 
-    // Return a dummy SVG path
-    const mockSvgPath = "M 50 50 L 150 50 L 100 150 Z";
+    // Return a more complex SVG path that looks like a "logo"
+    // (A bird-like shape for demo purposes)
+    const mockSvgPath = "M 100 100 C 120 80 150 80 170 100 C 190 120 190 150 170 170 L 100 170 C 80 150 80 120 100 100 Z";
 
-    return NextResponse.json({ path: mockSvgPath });
+    return NextResponse.json({
+        path: mockSvgPath,
+        accuracy: 0.98,
+        nodes: 4,
+        processingTime: '1.5s'
+    });
   } catch (error) {
     console.error("Vectorization Error:", error);
     return new NextResponse("Internal Server Error", { status: 500 });

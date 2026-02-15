@@ -1,0 +1,94 @@
+
+Running 3 tests using 1 worker
+
+  ✘  1 scripts/verify_dashboards.test.ts:3:5 › Verify User Dashboard (9.9s)
+  ✘  2 scripts/verify_dashboards.test.ts:9:5 › Verify Admin Dashboard (7.6s)
+  ✘  3 scripts/verify_dashboards.test.ts:15:5 › Verify Editor (29.0s)
+
+
+  1) scripts/verify_dashboards.test.ts:3:5 › Verify User Dashboard ─────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('h1')
+    Expected pattern: [32m/Dashboard|Welcome/i[39m
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('h1')[22m
+
+
+      3 | test('Verify User Dashboard', async ({ page }) => {
+      4 |   await page.goto('http://localhost:3004/dashboard');
+    > 5 |   await expect(page.locator('h1')).toContainText(/Dashboard|Welcome/i);
+        |                                    ^
+      6 |   await page.screenshot({ path: 'user_dashboard.png', fullPage: true });
+      7 | });
+      8 |
+        at /app/scripts/verify_dashboards.test.ts:5:36
+
+    Error Context: test-results/scripts-verify_dashboards-Verify-User-Dashboard/error-context.md
+
+  2) scripts/verify_dashboards.test.ts:9:5 › Verify Admin Dashboard ────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('h1')
+    Expected pattern: [32m/Admin|Control/i[39m
+    Received string:  [31m"System Intelligence."[39m
+    Timeout: 5000ms
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('h1')[22m
+    [2m    8 × locator resolved to <h1 class="text-6xl font-black text-foreground tracking-tighter uppercase italic leading-none">…</h1>[22m
+    [2m      - unexpected value "System Intelligence."[22m
+
+
+       9 | test('Verify Admin Dashboard', async ({ page }) => {
+      10 |   await page.goto('http://localhost:3004/admin/dashboard');
+    > 11 |   await expect(page.locator('h1')).toContainText(/Admin|Control/i);
+         |                                    ^
+      12 |   await page.screenshot({ path: 'admin_dashboard.png', fullPage: true });
+      13 | });
+      14 |
+        at /app/scripts/verify_dashboards.test.ts:11:36
+
+    Error Context: test-results/scripts-verify_dashboards-Verify-Admin-Dashboard/error-context.md
+
+  3) scripts/verify_dashboards.test.ts:15:5 › Verify Editor ────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('button')
+    Expected pattern: [32m/Export|Canvas|Studio/i[39m
+    Error: strict mode violation: locator('button') resolved to 2 elements:
+        1) <button type="submit" class="inline-flex items-center justify-center focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none active:scale-95 hover:bg-blue-700 dark:shadow-blue-900/40 px-4 py-2 w-full h-16 rounded-2xl text-xs font-black uppercase tracking-[0.2em] bg-primary text-primary-foreground hover:opacity-90 transition-all shadow-xl shadow-primary/20">Sign In Now</button> aka getByRole('button', { name: 'Sign In Now' })
+        2) <button id="next-logo" aria-haspopup="menu" data-next-mark="true" aria-expanded="false" data-next-mark-loading="true" aria-label="Open Next.js Dev Tools" data-nextjs-dev-tools-button="true" aria-controls="nextjs-dev-tools-menu">…</button> aka getByRole('button', { name: 'Open Next.js Dev Tools' })
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('button')[22m
+    [2m    - locator resolved to <button id="next-logo" aria-haspopup="menu" data-next-mark="true" aria-expanded="false" data-next-mark-loading="false" aria-label="Open Next.js Dev Tools" data-nextjs-dev-tools-button="true" aria-controls="nextjs-dev-tools-menu">…</button>[22m
+    [2m    - unexpected value ""[22m
+    [2m    - locator resolved to <button id="next-logo" aria-haspopup="menu" data-next-mark="true" aria-expanded="false" data-next-mark-loading="true" aria-label="Open Next.js Dev Tools" data-nextjs-dev-tools-button="true" aria-controls="nextjs-dev-tools-menu">…</button>[22m
+    [2m    - unexpected value ""[22m
+
+
+      15 | test('Verify Editor', async ({ page }) => {
+      16 |     await page.goto('http://localhost:3004/dashboard/create');
+    > 17 |     await expect(page.locator('button')).toContainText(/Export|Canvas|Studio/i);
+         |                                          ^
+      18 |     await page.screenshot({ path: 'editor_view.png', fullPage: true });
+      19 |   });
+      20 |
+        at /app/scripts/verify_dashboards.test.ts:17:42
+
+    Error Context: test-results/scripts-verify_dashboards-Verify-Editor/error-context.md
+
+  3 failed
+    scripts/verify_dashboards.test.ts:3:5 › Verify User Dashboard ──────────────────────────────────
+    scripts/verify_dashboards.test.ts:9:5 › Verify Admin Dashboard ─────────────────────────────────
+    scripts/verify_dashboards.test.ts:15:5 › Verify Editor ─────────────────────────────────────────

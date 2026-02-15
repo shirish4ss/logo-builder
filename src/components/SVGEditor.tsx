@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 
 const Mockup3DViewer = dynamic(
   () => import("./editor/Mockup3DViewer").then((mod) => mod.Mockup3DViewer),
-  { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center bg-white/[0.02] animate-pulse rounded-2xl border border-white/5">Loading 3D Engine...</div> }
+  { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center bg-muted animate-pulse rounded-2xl border border-border">Loading 3D Engine...</div> }
 );
 
 import {
@@ -19,7 +19,8 @@ import {
   Layers, Download, MousePointer2,
   ShieldCheck, Sparkles,
   Spline, Layout,
-  Combine, Minus, Target, XSquare
+  Combine, Minus, Target, XSquare,
+  Box, Maximize2, Share2, History
 } from "lucide-react";
 
 export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
@@ -32,16 +33,32 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
 
   useEffect(() => {
     if (layers.length === 0 && initialSvg) {
-        // Simple SVG parsing logic or just use initial path
+        // Simple SVG parsing simulation
         setLayers([
           {
-            id: "initial-logo",
-            name: "Icon",
+            id: "base-icon",
+            name: "Brand Mark",
             type: "path",
             d: "M 50 20 L 80 80 L 20 80 Z",
             x: 250,
-            y: 200,
-            fill: "#3b82f6",
+            y: 150,
+            fill: "currentColor",
+            stroke: "none",
+            strokeWidth: 0,
+            rotation: 0,
+            opacity: 1,
+            visible: true,
+            locked: false
+          },
+          {
+            id: "brand-text",
+            name: "Brand Name",
+            type: "text",
+            text: "IDENTITY",
+            fontSize: 24,
+            x: 235,
+            y: 280,
+            fill: "currentColor",
             stroke: "none",
             strokeWidth: 0,
             rotation: 0,
@@ -62,7 +79,7 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
         type,
         x: 300,
         y: 300,
-        fill: "#ffffff",
+        fill: "currentColor",
         stroke: "none",
         strokeWidth: 0,
         rotation: 0,
@@ -73,7 +90,7 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
 
     if (type === 'rect') { newLayer.width = 100; newLayer.height = 100; }
     if (type === 'circle') { newLayer.radius = 50; }
-    if (type === 'text') { newLayer.text = "New Identity"; newLayer.fontSize = 24; }
+    if (type === 'text') { newLayer.text = "New Label"; newLayer.fontSize = 18; }
 
     addLayer(newLayer);
   };
@@ -81,120 +98,139 @@ export const SVGEditor = ({ initialSvg }: { initialSvg: string }) => {
   const downloadSvg = () => {
     const svgElement = document.querySelector('svg');
     if (!svgElement) return;
-
     const svgData = new XMLSerializer().serializeToString(svgElement);
     const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
     const svgUrl = URL.createObjectURL(svgBlob);
     const downloadLink = document.createElement("a");
     downloadLink.href = svgUrl;
-    downloadLink.download = "logo.svg";
+    downloadLink.download = "brand-identity.svg";
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-200px)] bg-[#0a0a0a] rounded-3xl border border-white/5 overflow-hidden shadow-2xl">
-      {/* Top Bar */}
-      <div className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-white/[0.02]">
+    <div className="flex flex-col h-[calc(100vh-180px)] bg-card border border-border rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+      {/* Premium Toolbar Top */}
+      <div className="h-16 border-b border-border flex items-center justify-between px-6 bg-card/50 backdrop-blur-md sticky top-0 z-20">
         <div className="flex items-center space-x-6">
-          <div className="flex bg-black/40 rounded-full p-1 border border-white/5">
+          <div className="flex bg-muted p-1 rounded-2xl border border-border">
              <button
                onClick={() => setActiveTab("editor")}
-               className={`px-6 py-1.5 rounded-full text-xs font-bold transition-all ${activeTab === 'editor' ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]' : 'text-gray-500 hover:text-white'}`}
-             >2D Canvas</button>
+               className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'editor' ? 'bg-primary text-primary-foreground shadow-lg' : 'text-muted-foreground hover:text-foreground'}`}
+             >Canvas View</button>
              <button
                onClick={() => setActiveTab("3d")}
-               className={`px-6 py-1.5 rounded-full text-xs font-bold transition-all ${activeTab === '3d' ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]' : 'text-gray-500 hover:text-white'}`}
+               className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === '3d' ? 'bg-primary text-primary-foreground shadow-lg' : 'text-muted-foreground hover:text-foreground'}`}
              >3D Studio</button>
           </div>
 
+          <div className="h-6 w-px bg-border mx-2" />
+
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" onClick={undo} className="text-gray-500 hover:text-white"><Undo size={16} /></Button>
-            <Button variant="ghost" size="icon" onClick={redo} className="text-gray-500 hover:text-white"><Redo size={16} /></Button>
+            <Button variant="ghost" size="icon" onClick={undo} className="h-10 w-10 text-muted-foreground hover:text-foreground hover:bg-muted"><Undo size={16} /></Button>
+            <Button variant="ghost" size="icon" onClick={redo} className="h-10 w-10 text-muted-foreground hover:text-foreground hover:bg-muted"><Redo size={16} /></Button>
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
-            <ShieldCheck size={16} className="mr-2" /> IP Check
+        <div className="flex items-center space-x-3">
+          <Button variant="outline" size="sm" className="hidden md:flex h-10 border-border text-muted-foreground hover:text-foreground rounded-xl text-[10px] font-black uppercase tracking-widest">
+            <History size={14} className="mr-2" /> History
           </Button>
-          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
-            <Layers size={16} className="mr-2" /> Variations
+          <Button variant="outline" size="sm" className="hidden md:flex h-10 border-border text-muted-foreground hover:text-foreground rounded-xl text-[10px] font-black uppercase tracking-widest">
+            <Share2 size={14} className="mr-2" /> Collaboration
           </Button>
           <Button
             onClick={downloadSvg}
-            className="bg-white text-black hover:bg-gray-200 rounded-full h-9 px-6 font-bold"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-10 px-6 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20"
           >
-            <Download size={16} className="mr-2" /> Export SVG
+            <Download size={14} className="mr-2" /> Export Bundle
           </Button>
         </div>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Left Toolbar */}
-        <div className="w-16 border-r border-white/5 flex flex-col items-center py-6 gap-6 bg-black/20">
-             <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl bg-blue-600/10 text-blue-400 border border-blue-500/20"><MousePointer2 size={20} /></Button>
-             <Button variant="ghost" size="icon" className="w-10 h-10 text-gray-500 hover:text-white" onClick={() => addNewLayer('rect')}><Square size={20} /></Button>
-             <Button variant="ghost" size="icon" className="w-10 h-10 text-gray-500 hover:text-white" onClick={() => addNewLayer('circle')}><Circle size={20} /></Button>
-             <Button variant="ghost" size="icon" className="w-10 h-10 text-gray-500 hover:text-white" onClick={() => addNewLayer('text')}><Type size={20} /></Button>
-             <Button variant="ghost" size="icon" className="w-10 h-10 text-gray-500 hover:text-white" onClick={() => addNewLayer('path')}><Spline size={20} /></Button>
+        {/* Professional Sidebar Left */}
+        <div className="w-16 border-r border-border flex flex-col items-center py-8 gap-4 bg-muted/30">
+             <Button variant="ghost" size="icon" className="w-11 h-11 rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20"><MousePointer2 size={18} /></Button>
+             <div className="w-8 h-px bg-border my-2" />
+             <Button variant="ghost" size="icon" className="w-11 h-11 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted" onClick={() => addNewLayer('rect')}><Square size={18} /></Button>
+             <Button variant="ghost" size="icon" className="w-11 h-11 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted" onClick={() => addNewLayer('circle')}><Circle size={18} /></Button>
+             <Button variant="ghost" size="icon" className="w-11 h-11 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted" onClick={() => addNewLayer('text')}><Type size={18} /></Button>
+             <Button variant="ghost" size="icon" className="w-11 h-11 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted" onClick={() => addNewLayer('path')}><Spline size={18} /></Button>
         </div>
 
-        {/* Workspace */}
-        <div className="flex-1 bg-[#050505] relative">
-          {activeTab === "editor" ? (
-              <EditorCanvas />
-          ) : (
-              <div className="w-full h-full">
-                  <Mockup3DViewer logoUrl="" />
-              </div>
-          )}
+        {/* Artboard Area */}
+        <div className="flex-1 bg-muted/50 relative overflow-hidden flex items-center justify-center">
+            {/* Grid Pattern Overlay */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
+
+            <div className="relative shadow-2xl rounded-lg overflow-hidden border border-border bg-white dark:bg-black w-[600px] h-[450px]">
+                {activeTab === "editor" ? (
+                    <EditorCanvas />
+                ) : (
+                    <div className="w-full h-full">
+                        <Mockup3DViewer logoUrl="" />
+                    </div>
+                )}
+            </div>
+
+            <div className="absolute bottom-6 left-6 flex items-center space-x-2 bg-card/80 backdrop-blur-md border border-border px-3 py-1.5 rounded-full shadow-sm">
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">100% Zoom</span>
+                <Maximize2 size={12} className="text-muted-foreground" />
+            </div>
         </div>
 
-        {/* Right Panel */}
-        <div className="w-80 border-l border-white/5 flex flex-col bg-black/40">
+        {/* Control Panel Right */}
+        <div className="w-80 border-l border-border flex flex-col bg-card/50 backdrop-blur-md">
            <LayerPanel />
-           <div className="p-6 border-t border-white/5 flex-1 overflow-y-auto">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-6">Properties</h3>
+
+           <div className="flex-1 overflow-y-auto p-6">
+              <div className="flex items-center justify-between mb-8">
+                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Studio Inspector</h3>
+                 <Target size={14} className="text-muted-foreground" />
+              </div>
+
               {selectedIds.length > 0 ? (
-                <div className="space-y-6">
+                <div className="space-y-8">
                    <ColorPicker />
 
-                   <div className="space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-xs font-bold text-gray-600 uppercase">Opacity</span>
-                        <span className="text-xs text-white">100%</span>
+                   <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Layer Opacity</span>
+                        <span className="text-xs font-bold">100%</span>
                       </div>
-                      <div className="h-1 w-full bg-white/5 rounded-full">
-                        <div className="h-full w-full bg-blue-500 rounded-full"></div>
+                      <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                        <div className="h-full w-full bg-primary rounded-full"></div>
                       </div>
                    </div>
-                   <div className="pt-6 border-t border-white/5">
-                      <Button variant="outline" className="w-full justify-start border-white/5 text-gray-400 hover:text-white hover:bg-white/5 h-10">
-                        <Sparkles size={14} className="mr-2" /> AI Refine Element
+
+                   <div className="pt-8 border-t border-border">
+                      <Button variant="outline" className="w-full h-12 justify-center border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 rounded-2xl font-bold text-xs transition-all">
+                        <Sparkles size={14} className="mr-2" /> Neural Refinement
                       </Button>
                    </div>
 
                    {selectedIds.length === 2 && (
-                     <div className="pt-6 border-t border-white/5 space-y-4">
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-500">Pathfinder (Boolean)</h4>
-                        <div className="grid grid-cols-4 gap-2">
-                           <Button variant="ghost" size="icon" className="bg-white/5 hover:bg-blue-600 hover:text-white border border-white/5" title="Unite"><Combine size={14} /></Button>
-                           <Button variant="ghost" size="icon" className="bg-white/5 hover:bg-blue-600 hover:text-white border border-white/5" title="Subtract"><Minus size={14} /></Button>
-                           <Button variant="ghost" size="icon" className="bg-white/5 hover:bg-blue-600 hover:text-white border border-white/5" title="Intersect"><Target size={14} /></Button>
-                           <Button variant="ghost" size="icon" className="bg-white/5 hover:bg-blue-600 hover:text-white border border-white/5" title="Exclude"><XSquare size={14} /></Button>
+                     <div className="pt-8 border-t border-border space-y-4">
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Vector Operations</h4>
+                        <div className="grid grid-cols-4 gap-3">
+                           <Button variant="ghost" size="icon" className="h-10 w-10 bg-muted border border-border hover:bg-primary hover:text-primary-foreground rounded-xl transition-all" title="Unite"><Combine size={14} /></Button>
+                           <Button variant="ghost" size="icon" className="h-10 w-10 bg-muted border border-border hover:bg-primary hover:text-primary-foreground rounded-xl transition-all" title="Subtract"><Minus size={14} /></Button>
+                           <Button variant="ghost" size="icon" className="h-10 w-10 bg-muted border border-border hover:bg-primary hover:text-primary-foreground rounded-xl transition-all" title="Intersect"><Target size={14} /></Button>
+                           <Button variant="ghost" size="icon" className="h-10 w-10 bg-muted border border-border hover:bg-primary hover:text-primary-foreground rounded-xl transition-all" title="Exclude"><XSquare size={14} /></Button>
                         </div>
                      </div>
                    )}
                 </div>
               ) : (
-                <div className="text-center py-20">
-                   <Layout className="mx-auto text-gray-800 mb-4" size={32} />
-                   <p className="text-xs font-bold text-gray-700 uppercase tracking-widest leading-loose">Select an element<br/>to configure</p>
+                <div className="flex flex-col items-center justify-center py-20 text-center opacity-20">
+                   <Layout size={40} className="mb-4" />
+                   <p className="text-[10px] font-black uppercase tracking-[0.2em]">Select an element to<br/>begin inspecting</p>
                 </div>
               )}
            </div>
+
            <AIChatRefine />
         </div>
       </div>

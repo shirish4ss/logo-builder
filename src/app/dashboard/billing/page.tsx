@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { CurrencyInfo } from "@/lib/currency";
 import {
   CreditCard, IndianRupee, Globe, ShieldCheck,
   CheckCircle2, AlertCircle, History, Download,
@@ -11,6 +12,13 @@ import { Button } from "@/components/ui/button";
 
 export default function UserBillingPage() {
   const [selectedPlan, setSelectedPlan] = useState("Pro");
+  const [currency, setCurrency] = useState<CurrencyInfo>({ code: 'INR', symbol: '₹', region: 'IN' });
+
+  useEffect(() => {
+    fetch('/api/currency')
+      .then(res => res.json())
+      .then(data => setCurrency(data));
+  }, []);
 
   return (
     <div className="p-10 max-w-5xl mx-auto space-y-12">
@@ -26,7 +34,9 @@ export default function UserBillingPage() {
                 <div>
                     <span className="text-[10px] font-black uppercase tracking-widest text-blue-500 bg-blue-500/10 px-3 py-1 rounded-full mb-4 inline-block">Current Plan</span>
                     <h2 className="text-3xl font-black text-white tracking-tight">Professional Tier</h2>
-                    <p className="text-gray-500 font-medium mt-1">Billed annually (₹14,990/year)</p>
+                    <p className="text-gray-500 font-medium mt-1">
+                        Billed annually ({currency.symbol}{currency.region === 'IN' ? '14,990' : '199'}/{currency.region === 'IN' ? 'year' : 'yr'})
+                    </p>
                 </div>
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
                     <Zap size={24} className="text-blue-500" />

@@ -22,7 +22,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+Pro&family=Inter:wght@400;900&family=Roboto+Mono&family=Orbitron:wght@700&family=Rajdhani&family=Libre+Baskerville&family=Montserrat&family=Josefin+Sans:wght@700&family=Open+Sans&family=Poppins:wght@700&family=Lato&display=swap" rel="stylesheet" />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} grain`}>
         <Providers>{children}</Providers>
       </body>
     </html>

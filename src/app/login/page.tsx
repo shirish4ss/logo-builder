@@ -6,9 +6,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { ArrowLeft, Loader2, Lock, Mail } from "lucide-react";
+import { ArrowLeft, Loader2, Lock, Mail, Sparkles, ShieldCheck, Zap } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -30,122 +29,172 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError("Invalid email or password");
+        setError("Invalid credentials. Please try again.");
       } else {
         router.push("/dashboard");
         router.refresh();
       }
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError("An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050505] text-white relative overflow-hidden px-6">
-      {/* Background Decor */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] -z-10 animate-pulse"></div>
-      <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none -z-10"></div>
+    <div className="min-h-screen flex bg-background text-foreground overflow-hidden">
+      {/* Left Side: Visual Experience */}
+      <div className="hidden lg:flex flex-1 relative bg-primary overflow-hidden items-center justify-center p-24">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/80 to-transparent"></div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md relative"
-      >
-        <div className="mb-8">
-            <Link href="/" className="inline-flex items-center text-sm font-medium text-white/50 hover:text-white transition-colors group">
-                <ArrowLeft size={16} className="mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Home
+        <div className="relative z-10 space-y-8 max-w-lg">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="w-20 h-20 bg-primary-foreground text-primary rounded-[2rem] flex items-center justify-center shadow-2xl"
+            >
+                <Sparkles size={40} />
+            </motion.div>
+
+            <div className="space-y-4">
+                <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-5xl font-black text-primary-foreground tracking-tighter leading-tight"
+                >
+                    Design your legacy, <br />
+                    <span className="opacity-50">powered by AI.</span>
+                </motion.h2>
+                <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-primary-foreground/60 text-lg font-medium"
+                >
+                    Join 10,000+ creators building award-winning brands with LogoAI.
+                </motion.p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+                {[
+                    { icon: Zap, text: "Instant SVG" },
+                    { icon: ShieldCheck, text: "Legal Rights" }
+                ].map((item, i) => (
+                    <motion.div
+                        key={item.text}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4 + (i * 0.1) }}
+                        className="bg-primary-foreground/10 backdrop-blur-md border border-primary-foreground/20 p-4 rounded-2xl flex items-center space-x-3"
+                    >
+                        <item.icon className="text-primary-foreground" size={20} />
+                        <span className="text-primary-foreground font-bold text-sm">{item.text}</span>
+                    </motion.div>
+                ))}
+            </div>
+        </div>
+
+        {/* Decorative Floating Elements */}
+        <motion.div
+            animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-20 right-20 w-32 h-32 bg-white/5 backdrop-blur-sm rounded-full border border-white/10"
+        />
+        <motion.div
+            animate={{ y: [0, 30, 0], rotate: [0, -10, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-40 left-10 w-24 h-24 bg-primary-foreground/5 backdrop-blur-md rounded-3xl border border-white/10"
+        />
+      </div>
+
+      {/* Right Side: Auth Form */}
+      <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 lg:px-24 xl:px-32 relative">
+        <div className="absolute top-8 left-8 lg:left-24">
+            <Link href="/" className="inline-flex items-center text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors group">
+                <ArrowLeft size={16} className="mr-2 group-hover:-translate-x-1 transition-transform" /> Back to home
             </Link>
         </div>
 
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center space-x-2 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-blue-600/20">
-              <span className="text-white font-black text-xl italic">L</span>
+        <div className="max-w-md w-full mx-auto space-y-10">
+          <div>
+            <h1 className="text-4xl font-black tracking-tighter uppercase italic text-foreground mb-2">Welcome Back</h1>
+            <p className="text-muted-foreground font-medium uppercase tracking-widest text-[10px]">Access your brand ecosystem</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="p-4 bg-destructive/10 border border-destructive/20 rounded-2xl text-destructive text-xs font-bold text-center"
+              >
+                {error}
+              </motion.div>
+            )}
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email Address</label>
+                <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+                    <Input
+                        type="email"
+                        placeholder="name@company.com"
+                        className="h-14 pl-12 rounded-2xl border-border bg-muted/50 focus:bg-background focus:ring-primary transition-all font-medium"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between items-center ml-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Password</label>
+                    <Link href="#" className="text-[10px] font-black uppercase tracking-widest text-primary hover:opacity-80 transition-opacity">Forgot?</Link>
+                </div>
+                <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+                    <Input
+                        type="password"
+                        placeholder="••••••••"
+                        className="h-14 pl-12 rounded-2xl border-border bg-muted/50 focus:bg-background focus:ring-primary transition-all font-medium"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+              </div>
             </div>
-            <span className="text-xl font-black tracking-tighter">LOGOAI</span>
-          </Link>
+
+            <Button
+              type="submit"
+              className="w-full h-16 rounded-2xl text-xs font-black uppercase tracking-[0.2em] bg-primary text-primary-foreground hover:opacity-90 transition-all shadow-xl shadow-primary/20"
+              disabled={loading}
+            >
+              {loading ? <Loader2 className="animate-spin" /> : "Sign In Now"}
+            </Button>
+          </form>
+
+          <div className="text-center pt-4">
+            <p className="text-sm font-medium text-muted-foreground">
+              New to LogoAI?{" "}
+              <Link href="/register" className="text-primary font-black uppercase tracking-widest text-xs hover:underline decoration-2 underline-offset-4">
+                Create free account
+              </Link>
+            </p>
+          </div>
         </div>
 
-        <div className="relative group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2rem] blur opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200"></div>
-          <Card className="relative border-white/5 bg-black/40 backdrop-blur-2xl shadow-2xl rounded-[2rem] overflow-hidden">
-            <CardHeader className="space-y-1 p-8 pb-4">
-              <CardTitle className="text-2xl font-bold text-center tracking-tight">Welcome Back</CardTitle>
-              <CardDescription className="text-center text-white/40 font-medium">
-                Enter your credentials to access your studio.
-              </CardDescription>
-            </CardHeader>
-            <form onSubmit={handleSubmit}>
-              <CardContent className="space-y-4 p-8 pt-0">
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-bold text-center"
-                  >
-                    {error}
-                  </motion.div>
-                )}
-                <div className="space-y-2">
-                  <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="Email Address"
-                      className="h-14 pl-12 rounded-xl border-white/5 bg-white/5 focus:bg-white/10 focus:ring-blue-500 transition-all text-white placeholder:text-white/20"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="Password"
-                      className="h-14 pl-12 rounded-xl border-white/5 bg-white/5 focus:bg-white/10 focus:ring-blue-500 transition-all text-white placeholder:text-white/20"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end">
-                  <Link href="#" className="text-xs font-medium text-white/30 hover:text-white transition-colors">
-                    Forgot password?
-                  </Link>
-                </div>
-              </CardContent>
-              <CardFooter className="flex flex-col space-y-4 p-8 pt-0">
-                <Button
-                  type="submit"
-                  className="w-full h-14 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white transition-all shadow-xl shadow-blue-600/20"
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="animate-spin" /> : "Sign In to Dashboard"}
-                </Button>
-                <div className="text-center text-xs text-white/30 font-medium">
-                  Don&apos;t have an account?{" "}
-                  <Link href="/register" className="text-blue-500 hover:text-blue-400 font-bold transition-colors">
-                    Create one for free
-                  </Link>
-                </div>
-              </CardFooter>
-            </form>
-          </Card>
+        {/* Footer info */}
+        <div className="absolute bottom-8 left-0 right-0 text-center">
+            <p className="text-[9px] font-black text-muted-foreground/30 uppercase tracking-[0.3em]">
+                Secure Cloud Gateway 2.0 • 2024
+            </p>
         </div>
-
-        <p className="text-center mt-8 text-white/10 text-[10px] uppercase tracking-[0.2em] font-bold">
-          Secure Cloud Authentication
-        </p>
-      </motion.div>
+      </div>
     </div>
   );
 }

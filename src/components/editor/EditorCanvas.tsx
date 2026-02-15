@@ -1,11 +1,52 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useEditorStore, Layer } from "@/lib/store";
 import { motion } from "framer-motion";
+import { parsePath, updatePathSegment } from "@/lib/path-utils";
 
 export const EditorCanvas = () => {
   const { layers, selectedIds, setSelectedIds, updateLayer } = useEditorStore();
+  const [editingSegments, setEditingSegments] = useState<{ id: string, segments: any[] } | null>(null);
+
+  useEffect(() => {
+    if (selectedIds.length === 1) {
+      const layer = layers.find(l => l.id === selectedIds[0]);
+      if (layer?.type === 'path' && layer.d) {
+        setEditingSegments({ id: layer.id, segments: parsePath(layer.d) });
+      } else {
+        setEditingSegments(null);
+      }
+    } else {
+      setEditingSegments(null);
+    }
+  }, [selectedIds, layers]);
+
+  const handleSegmentDrag = (id: string, index: number, info: any, type: 'point' | 'handleIn' | 'handleOut') => {
+    const layer = layers.find(l => l.id === id);
+    if (!layer || !layer.d || !editingSegments) return;
+
+    const updates: any = {};
+    if (type === 'point') {
+        updates.point = {
+            x: editingSegments.segments[index].point.x + info.offset.x,
+            y: editingSegments.segments[index].point.y + info.offset.y
+        };
+    } else if (type === 'handleIn') {
+        updates.handleIn = {
+            x: editingSegments.segments[index].handleIn.x + info.offset.x,
+            y: editingSegments.segments[index].handleIn.y + info.offset.y
+        };
+    } else if (type === 'handleOut') {
+        updates.handleOut = {
+            x: editingSegments.segments[index].handleOut.x + info.offset.x,
+            y: editingSegments.segments[index].handleOut.y + info.offset.y
+        };
+    }
+
+    const newD = updatePathSegment(layer.d, index, updates);
+    updateLayer(id, { d: newD });
+  };
   const svgRef = useRef<SVGSVGElement>(null);
 
   const handleLayerClick = (e: React.MouseEvent, id: string) => {
@@ -145,13 +186,54 @@ export const EditorCanvas = () => {
                 strokeWidth="1"
                 strokeDasharray="4"
               />
-              {/* Pro Node Editor Mockup */}
-              {l.type === 'path' && (
-                <g>
-                  <circle cx={l.x - 20} cy={l.y - 20} r={3} fill="white" stroke="#3b82f6" />
-                  <circle cx={l.x + 20} cy={l.y + 20} r={3} fill="white" stroke="#3b82f6" />
-                  <circle cx={l.x - 20} cy={l.y + 20} r={3} fill="white" stroke="#3b82f6" />
-                  <circle cx={l.x + 20} cy={l.y - 20} r={3} fill="white" stroke="#3b82f6" />
+              {/* Real Node Editor */}
+              {l.type === 'path' && editingSegments && editingSegments.id === l.id && (
+                <g transform={`translate(${l.x}, ${l.y}) rotate(${l.rotation})`}>
+                  {editingSegments.segments.map((seg, idx) => (
+                    <g key={idx}>
+                      {/* Lines to handles */}
+                      <line x1={seg.point.x} y1={seg.point.y} x2={seg.point.x + seg.handleIn.x} y2={seg.point.y + seg.handleIn.y} stroke="#3b82f6" strokeWidth="1" />
+                      <line x1={seg.point.x} y1={seg.point.y} x2={seg.point.x + seg.handleOut.x} y2={seg.point.y + seg.handleOut.y} stroke="#3b82f6" strokeWidth="1" />
+
+                      {/* Anchor Point */}
+                      <motion.circle
+                        cx={seg.point.x}
+                        cy={seg.point.y}
+                        r={4}
+                        fill="#3b82f6"
+                        drag
+                        dragMomentum={false}
+                        onDragEnd={(e, info) => handleSegmentDrag(l.id, idx, info, 'point')}
+                        style={{ cursor: 'crosshair' }}
+                      />
+
+                      {/* Handle In */}
+                      <motion.circle
+                        cx={seg.point.x + seg.handleIn.x}
+                        cy={seg.point.y + seg.handleIn.y}
+                        r={3}
+                        fill="white"
+                        stroke="#3b82f6"
+                        drag
+                        dragMomentum={false}
+                        onDragEnd={(e, info) => handleSegmentDrag(l.id, idx, info, 'handleIn')}
+                        style={{ cursor: 'nwse-resize' }}
+                      />
+
+                      {/* Handle Out */}
+                      <motion.circle
+                        cx={seg.point.x + seg.handleOut.x}
+                        cy={seg.point.y + seg.handleOut.y}
+                        r={3}
+                        fill="white"
+                        stroke="#3b82f6"
+                        drag
+                        dragMomentum={false}
+                        onDragEnd={(e, info) => handleSegmentDrag(l.id, idx, info, 'handleOut')}
+                        style={{ cursor: 'nwse-resize' }}
+                      />
+                    </g>
+                  ))}
                 </g>
               )}
             </React.Fragment>

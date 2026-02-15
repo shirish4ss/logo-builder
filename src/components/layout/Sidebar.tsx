@@ -6,9 +6,9 @@ import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import {
   LayoutDashboard, PenTool, Briefcase, Share2, Settings,
-  History, Box, Shield, LogOut, Sparkles, Zap, ChevronRight,
-  ImageIcon, CreditCard, Users, Heart, MessageSquare, BookOpen,
-  LifeBuoy, Link as LinkIcon, Bell, Gift, Users2, Info, Search
+  Box, Shield, LogOut, Sparkles, Zap, ChevronRight,
+  ImageIcon, CreditCard, Users, Heart, MessageSquare,
+  LifeBuoy, Link as LinkIcon, Bell, Gift, Users2, Search
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +21,7 @@ const menuGroups = [
       { name: "Branding Kit", href: "/dashboard/kit", icon: Briefcase },
       { name: "Social Kit", href: "/dashboard/social", icon: Share2 },
       { name: "Mockups", href: "/dashboard/mockups", icon: Box },
+      { name: "Print Studio", href: "/dashboard/print", icon: Zap, highlight: true },
       { name: "Vectorizer", href: "/dashboard/vectorizer", icon: Zap },
       { name: "AI Naming", href: "/dashboard/naming", icon: Search },
     ]
@@ -60,20 +61,20 @@ export const Sidebar = () => {
   const isAdmin = (session?.user as any)?.role === "ADMIN";
 
   return (
-    <aside className="w-72 bg-black/40 backdrop-blur-3xl h-screen border-r border-white/5 flex flex-col z-40 relative">
-      <div className="p-8 border-b border-white/5">
+    <aside className="w-72 bg-card/80 backdrop-blur-3xl h-screen border-r border-border flex flex-col z-40 relative">
+      <div className="p-8 border-b border-border">
         <Link href="/" className="flex items-center space-x-3 group">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-blue-600/20">
-             <Sparkles className="text-white" size={20} />
+          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-primary/20">
+             <Sparkles className="text-primary-foreground" size={20} />
           </div>
-          <span className="text-xl font-black text-white tracking-tighter uppercase italic">LogoAI</span>
+          <span className="text-xl font-black text-foreground tracking-tighter uppercase italic">LogoAI</span>
         </Link>
       </div>
 
       <nav className="flex-1 px-4 space-y-8 overflow-y-auto py-8">
         {menuGroups.map((group) => (
           <div key={group.title} className="space-y-1.5">
-            <p className="px-4 text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4">{group.title}</p>
+            <p className="px-4 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-4">{group.title}</p>
             {group.items.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -83,12 +84,12 @@ export const Sidebar = () => {
                   className={cn(
                     "flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group relative",
                     isActive
-                      ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
-                      : "text-white/40 hover:text-white hover:bg-white/5"
+                      ? "bg-primary text-primary-foreground shadow-lg"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
                 >
                   <div className="flex items-center space-x-3 relative z-10">
-                    <item.icon size={18} className={cn(isActive ? "text-white" : "text-white/20 group-hover:text-white transition-colors")} />
+                    <item.icon size={18} className={cn(isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground transition-colors")} />
                     <span className="text-xs font-bold">{item.name}</span>
                   </div>
 
@@ -97,7 +98,7 @@ export const Sidebar = () => {
                         <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.6)]"></div>
                       )}
                       {isActive && (
-                        <ChevronRight size={14} className="text-white/50" />
+                        <ChevronRight size={14} className="text-primary-foreground/50" />
                       )}
                   </div>
                 </Link>
@@ -107,9 +108,9 @@ export const Sidebar = () => {
         ))}
       </nav>
 
-      <div className="p-6 mt-auto border-t border-white/5 space-y-3 bg-black/20">
+      <div className="p-6 mt-auto border-t border-border space-y-3 bg-muted/20">
         {isAdmin && (
-          <Link href="/admin/dashboard" className="flex items-center space-x-3 px-4 py-3 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-400/5 transition-all border border-red-400/10">
+          <Link href="/admin/dashboard" className="flex items-center space-x-3 px-4 py-3 rounded-xl text-red-500 hover:text-red-600 hover:bg-red-500/5 transition-all border border-red-500/10">
             <Shield size={18} />
             <span className="text-xs font-bold uppercase tracking-widest">Admin Terminal</span>
           </Link>
@@ -117,7 +118,7 @@ export const Sidebar = () => {
 
         <button
           onClick={() => signOut({ callbackUrl: '/' })}
-          className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-white/20 hover:text-white hover:bg-white/5 transition-all"
+          className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
         >
           <LogOut size={18} />
           <span className="text-xs font-bold uppercase tracking-widest">Sign Out</span>

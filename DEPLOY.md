@@ -1,52 +1,68 @@
-# Deployment Guide for LogoAI
+# Deployment Guide: LogoAI
 
-This guide explains how to push LogoAI to a live server.
+This guide provides step-by-step instructions for deploying LogoAI to a live production environment.
 
 ## 1. Prerequisites
-- A GitHub account.
-- A Vercel account (recommended) or any Next.js compatible hosting.
-- A PostgreSQL database (e.g., from Neon.tech, Supabase, or Railway) if you want to use a remote DB. By default, this project uses SQLite for local development.
+- A **PostgreSQL** database (e.g., Supabase, Neon, or RDS).
+- An **OpenRouter** or **Google Gemini** API key for AI features.
+- A **Razorpay** and/or **Stripe** account for payments.
+- Node.js 18+ installed on the server.
 
 ## 2. Environment Variables
-You must set the following environment variables in your hosting provider's dashboard:
+Create a `.env` file in your production environment with the following:
 
-| Variable | Description |
-| --- | --- |
-| `DATABASE_URL` | Your production database connection string. |
-| `NEXTAUTH_SECRET` | A random string for session encryption. |
-| `NEXTAUTH_URL` | Your production URL (e.g., `https://your-app.vercel.app`). |
-| `OPENROUTER_API_KEY` | API key from [OpenRouter](https://openrouter.ai). |
-| `GOOGLE_AI_API_KEY` | API key from Google AI Studio (Gemini). |
-| `RAZORPAY_KEY_ID` | Your Razorpay API Key ID. |
-| `RAZORPAY_KEY_SECRET` | Your Razorpay API Key Secret. |
-| `STRIPE_SECRET_KEY` | Your Stripe Secret Key. |
+```env
+# Database
+DATABASE_URL="postgresql://user:password@host:port/dbname?sslmode=require"
 
-## 3. Deployment Steps (Vercel)
-1. **Push to GitHub**: Initialize a git repo and push your code to a GitHub repository.
-2. **Import to Vercel**:
-   - Login to Vercel and click "Add New" -> "Project".
-   - Select your GitHub repository.
-3. **Configure Build Settings**:
-   - Framework Preset: Next.js.
-   - Root Directory: `./`.
-   - Build Command: `prisma generate && next build`.
-4. **Add Environment Variables**: Copy and paste the variables from your local `.env` (excluding `DATABASE_URL` if you are using a production DB).
-5. **Deploy**: Click "Deploy".
+# Auth
+NEXTAUTH_URL="https://yourdomain.com"
+NEXTAUTH_SECRET="your-super-secret-key"
 
-## 4. Database Setup
-If you are switching from SQLite to PostgreSQL for production:
-1. Update `prisma/schema.prisma`:
-   ```prisma
-   datasource db {
-     provider = "postgresql"
-     url      = env("DATABASE_URL")
-   }
+# AI
+OPENROUTER_API_KEY="your-key"
+GOOGLE_GEMINI_API_KEY="your-key"
+
+# Payments
+RAZORPAY_KEY_ID="rzp_live_..."
+RAZORPAY_KEY_SECRET="your-secret"
+STRIPE_SECRET_KEY="sk_live_..."
+```
+
+## 3. Build & Deployment Steps
+
+### Option A: Vercel (Recommended)
+1. Push your code to a GitHub/GitLab repository.
+2. Import the project in Vercel.
+3. Add the Environment Variables in the Vercel Dashboard.
+4. Vercel will automatically detect Next.js and deploy.
+
+### Option B: Self-Hosted (VPS / Ubuntu)
+1. **Clone & Install:**
+   ```bash
+   git clone <your-repo-url>
+   cd logo-ai
+   npm install
    ```
-2. Run `npx prisma db push` to sync the schema to your production database.
+2. **Database Migration:**
+   ```bash
+   npx prisma migrate deploy
+   ```
+3. **Build:**
+   ```bash
+   npm run build
+   ```
+4. **Run with PM2:**
+   ```bash
+   pm2 start npm --name "logoai" -- start
+   ```
 
-## 5. Payment Setup
-- **Razorpay**: Create an account at [Razorpay](https://razorpay.com) and get your test/live keys.
-- **Stripe**: Create an account at [Stripe](https://stripe.com) and get your secret and publishable keys.
+## 4. Post-Deployment Checklist
+- [ ] Verify SSL (HTTPS) is active.
+- [ ] Test the "Join Free" flow and database persistence.
+- [ ] Run a test transaction in Razorpay/Stripe (Sandbox mode first).
+- [ ] Verify AI logo generation prompts are reaching the API.
 
-## 6. AI Models
-The app uses `google/gemini-flash-1.5-exp` via OpenRouter. Ensure your OpenRouter account has credits or a valid free tier setup.
+## 5. Support & Maintenance
+- **Logs:** Use `pm2 logs logoai` or Vercel Runtime Logs.
+- **Admin Access:** Manually update your user role to `ADMIN` in the database to access `/admin/dashboard`.

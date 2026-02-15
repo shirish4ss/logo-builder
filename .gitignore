@@ -40,3 +40,12 @@ next-env.d.ts
 # logs
 *.log
 verification/
+node_modules/
+.next/
+build.log
+dev_server*.log
+verification/
+app_files.txt
+pricing_files.txt
+check_pages.txt
+curl_check.txt

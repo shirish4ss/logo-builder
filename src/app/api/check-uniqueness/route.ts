@@ -1,26 +1,24 @@
 import { NextResponse } from 'next/server';
+import { checkLogoUniqueness } from '@/lib/ai-utils';
 
 export async function POST(request: Request) {
   try {
-    const { svg } = await request.json();
+    const { svg, layers } = await request.json();
 
-    if (!svg) {
-      return new NextResponse("Missing SVG data", { status: 400 });
+    if (!svg && !layers) {
+      return new NextResponse("Missing data for analysis", { status: 400 });
     }
 
-    // Mock Copyright/Uniqueness check
-    // In production, this would call a reverse image search API
-    // or a specialized brand database API.
     console.log("Checking uniqueness for logo...");
 
-    const score = Math.floor(Math.random() * (100 - 85 + 1)) + 85; // Random score between 85 and 100
-    const matches: any[] = [];
+    // Use the realistic utility
+    const result = await checkLogoUniqueness(layers || { svg });
 
-    if (score < 90) {
-        matches.push({ name: "SimilarBrand X", similarity: "12%" });
-    }
-
-    return NextResponse.json({ score, matches });
+    return NextResponse.json({
+        score: result.uniquenessScore,
+        matches: result.potentialMatches.map(m => ({ name: m.brand, similarity: `${(m.similarity * 100).toFixed(0)}%` })),
+        recommendation: result.recommendation
+    });
   } catch (error) {
     console.error("Uniqueness Check Error:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
