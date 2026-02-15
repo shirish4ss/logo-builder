@@ -31,6 +31,7 @@ interface EditorState {
   selectedIds: string[];
   history: Layer[][];
   historyIndex: number;
+  activeTool: 'select' | 'pen' | 'text' | 'hand';
 
   // Actions
   setLayers: (layers: Layer[]) => void;
@@ -38,6 +39,7 @@ interface EditorState {
   updateLayer: (id: string, updates: Partial<Layer>) => void;
   removeLayers: (ids: string[]) => void;
   setSelectedIds: (ids: string[]) => void;
+  setActiveTool: (tool: 'select' | 'pen' | 'text' | 'hand') => void;
 
   // Undo/Redo
   saveHistory: () => void;
@@ -60,6 +62,7 @@ export const useEditorStore = create<EditorState>()(
     selectedIds: [],
     history: [[]],
     historyIndex: 0,
+    activeTool: 'select',
 
     setLayers: (layers) => set({ layers }),
 
@@ -84,6 +87,8 @@ export const useEditorStore = create<EditorState>()(
     },
 
     setSelectedIds: (ids) => set({ selectedIds: ids }),
+
+    setActiveTool: (tool) => set({ activeTool: tool }),
 
     saveHistory: () => {
       const { layers, history, historyIndex } = get();

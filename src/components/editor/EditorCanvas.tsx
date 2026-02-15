@@ -1,13 +1,189 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, memo } from "react";
 import { useEditorStore, Layer } from "@/lib/store";
-import { motion } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { parsePath, updatePathSegment } from "@/lib/path-utils";
 
+// --- Sub-components ---
+
+const EditableText = ({
+  layer,
+  onUpdate
+}: {
+  layer: Layer,
+  onUpdate: (text: string) => void
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempText, setTempText] = useState(layer.text || "");
+
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsEditing(true);
+  };
+
+  const handleBlur = () => {
+    setIsEditing(false);
+    if (tempText !== layer.text) {
+      onUpdate(tempText);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleBlur();
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <foreignObject
+        x={layer.x - (layer.width || 100) / 2}
+        y={layer.y - (layer.fontSize || 20) / 2}
+        width={layer.width || 200}
+        height={layer.fontSize || 40}
+      >
+        <input
+          autoFocus
+          className="bg-transparent text-white border-none outline-none text-center w-full h-full"
+          style={{
+            fontFamily: layer.fontFamily || 'inherit',
+            fontSize: layer.fontSize || 20,
+            color: layer.fill
+          }}
+          value={tempText}
+          onChange={(e) => setTempText(e.target.value)}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+        />
+      </foreignObject>
+    );
+  }
+
+  return (
+    <text
+      x={layer.x}
+      y={layer.y}
+      fill={layer.fill}
+      stroke={layer.stroke}
+      strokeWidth={layer.strokeWidth}
+      opacity={layer.opacity}
+      textAnchor="middle"
+      dominantBaseline="middle"
+      className="select-none font-bold cursor-text"
+      style={{ fontFamily: layer.fontFamily || 'inherit', fontSize: layer.fontSize || 20 }}
+      onDoubleClick={handleDoubleClick}
+    >
+      {layer.text}
+    </text>
+  );
+};
+
+const LayerComponent = memo(({
+  layer,
+  isSelected,
+  activeTool,
+  onClick,
+  onUpdate
+}: {
+  layer: Layer,
+  isSelected: boolean,
+  activeTool: string,
+  onClick: (e: React.MouseEvent) => void,
+  onUpdate: (id: string, updates: Partial<Layer>) => void
+}) => {
+  if (!layer.visible) return null;
+
+  const handleDragEnd = (event: any, info: any) => {
+    onUpdate(layer.id, { x: layer.x + info.offset.x, y: layer.y + info.offset.y });
+  };
+
+  const commonProps = {
+    fill: layer.fill,
+    stroke: layer.stroke,
+    strokeWidth: layer.strokeWidth,
+    opacity: layer.opacity,
+    style: { cursor: layer.locked ? "default" : (activeTool === 'select' ? "move" : "default") },
+    onClick,
+  };
+
+  const dragProps = {
+    drag: !layer.locked && activeTool === 'select',
+    dragMomentum: false,
+    onDragEnd: handleDragEnd,
+  };
+
+  const transform = `rotate(${layer.rotation})`;
+
+  switch (layer.type) {
+    case "path":
+      return (
+        <motion.path
+          key={layer.id}
+          {...commonProps}
+          {...dragProps}
+          d={layer.d}
+          transform={`translate(${layer.x}, ${layer.y}) ${transform}`}
+        />
+      );
+    case "circle":
+      return (
+        <motion.circle
+          key={layer.id}
+          {...commonProps}
+          {...dragProps}
+          cx={layer.x}
+          cy={layer.y}
+          r={layer.radius || 20}
+          transform={transform}
+        />
+      );
+    case "rect":
+      return (
+        <motion.rect
+          key={layer.id}
+          {...commonProps}
+          {...dragProps}
+          x={layer.x - (layer.width!/2)}
+          y={layer.y - (layer.height!/2)}
+          width={layer.width}
+          height={layer.height}
+          transform={transform}
+        />
+      );
+    case "text":
+      return (
+        <g key={layer.id} transform={transform}>
+           <EditableText layer={layer} onUpdate={(t) => onUpdate(layer.id, { text: t })} />
+        </g>
+      );
+    case "image":
+      return (
+        <motion.image
+          key={layer.id}
+          {...commonProps}
+          {...dragProps}
+          href={layer.imageUrl}
+          x={layer.x - (layer.width!/2)}
+          y={layer.y - (layer.height!/2)}
+          width={layer.width}
+          height={layer.height}
+          transform={transform}
+        />
+      );
+    default:
+      return null;
+  }
+});
+
+LayerComponent.displayName = "LayerComponent";
+
+// --- Main Component ---
+
 export const EditorCanvas = () => {
-  const { layers, selectedIds, setSelectedIds, updateLayer } = useEditorStore();
+  const { layers, selectedIds, setSelectedIds, updateLayer, activeTool } = useEditorStore();
   const [editingSegments, setEditingSegments] = useState<{ id: string, segments: any[] } | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     if (selectedIds.length === 1) {
@@ -47,108 +223,15 @@ export const EditorCanvas = () => {
     const newD = updatePathSegment(layer.d, index, updates);
     updateLayer(id, { d: newD });
   };
-  const svgRef = useRef<SVGSVGElement>(null);
 
-  const handleLayerClick = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    setSelectedIds([id]);
-  };
-
-  const renderLayer = (layer: Layer) => {
-    if (!layer.visible) return null;
-
-    // Curved Text Path Helper
-    const getTextPath = (curvature: number) => {
-        const r = Math.abs(2000 / (curvature || 0.001));
-        const sweep = curvature > 0 ? 0 : 1;
-        return `M -100,0 A ${r},${r} 0 0,${sweep} 100,0`;
-    };
-
-    const commonProps = {
-      key: layer.id,
-      onClick: (e: React.MouseEvent) => handleLayerClick(e, layer.id),
-      fill: layer.fill,
-      stroke: layer.stroke,
-      strokeWidth: layer.strokeWidth,
-      opacity: layer.opacity,
-      transform: `translate(${layer.x}, ${layer.y}) rotate(${layer.rotation})`,
-      style: { cursor: layer.locked ? "default" : "move" },
-    };
-
-    const dragProps = {
-        drag: !layer.locked,
-        dragMomentum: false,
-        onDrag: (event: any, info: any) => {
-            // Snapping logic could be triggered here to show guides
-        },
-        onDragEnd: (event: any, info: any) => {
-            updateLayer(layer.id, { x: layer.x + info.offset.x, y: layer.y + info.offset.y });
-        }
-    };
-
-    switch (layer.type) {
-      case "image":
-        return (
-          <motion.image
-            {...commonProps}
-            {...dragProps}
-            href={layer.imageUrl}
-            x={-(layer.width!/2)}
-            y={-(layer.height!/2)}
-            width={layer.width}
-            height={layer.height}
-          />
-        );
-      case "path":
-        return <motion.path {...commonProps} {...dragProps} d={layer.d} />;
-      case "circle":
-        return <motion.circle {...commonProps} {...dragProps} cx={0} cy={0} r={layer.radius || 20} />;
-      case "rect":
-        return <motion.rect {...commonProps} {...dragProps} x={-(layer.width!/2)} y={-(layer.height!/2)} width={layer.width} height={layer.height} />;
-      case "text":
-        if (layer.curvature) {
-            const pathId = `path-${layer.id}`;
-            return (
-                <g key={layer.id} transform={`translate(${layer.x}, ${layer.y}) rotate(${layer.rotation})`}>
-                    <defs>
-                        <path id={pathId} d={getTextPath(layer.curvature)} />
-                    </defs>
-                    <text
-                        fill={layer.fill}
-                        stroke={layer.stroke}
-                        strokeWidth={layer.strokeWidth}
-                        opacity={layer.opacity}
-                        onClick={(e) => handleLayerClick(e, layer.id)}
-                        className="select-none font-bold"
-                        style={{ fontFamily: layer.fontFamily || 'inherit' }}
-                    >
-                        <textPath href={`#${pathId}`} startOffset="50%" textAnchor="middle">
-                            {layer.text}
-                        </textPath>
-                    </text>
-                </g>
-            );
-        }
-        return (
-          <text
-            {...commonProps}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            className="select-none font-bold"
-            style={{ ...commonProps.style, fontFamily: layer.fontFamily || 'inherit' }}
-          >
-            {layer.text}
-          </text>
-        );
-      default:
-        return null;
-    }
+  const handleCanvasClick = () => {
+    setSelectedIds([]);
   };
 
   return (
     <div
       className="flex-1 bg-gray-100 dark:bg-gray-950 flex items-center justify-center overflow-hidden p-10"
-      onClick={() => setSelectedIds([])}
+      onClick={handleCanvasClick}
     >
       <div className="relative bg-white dark:bg-gray-900 shadow-2xl rounded-sm">
         <svg
@@ -158,19 +241,28 @@ export const EditorCanvas = () => {
           viewBox="0 0 600 600"
           className="max-w-full h-auto block"
         >
-          {/* Definitions for Text Paths and Boolean Ops */}
           <defs>
              <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="gray" strokeWidth="0.5" opacity="0.1"/>
              </pattern>
-             {/* Dynamic paths for text-on-path will be added here or rendered inline */}
-             <path id="circle-path" d="M 300, 300 m -100, 0 a 100,100 0 1,1 200,0 a 100,100 0 1,1 -200,0" />
           </defs>
 
           <rect width="600" height="600" fill="url(#grid)" />
 
-          <g transform="translate(0, 0)">
-            {layers.map(renderLayer)}
+          <g>
+            {layers.map((layer) => (
+              <LayerComponent
+                key={layer.id}
+                layer={layer}
+                isSelected={selectedIds.includes(layer.id)}
+                activeTool={activeTool}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedIds([layer.id]);
+                }}
+                onUpdate={updateLayer}
+              />
+            ))}
           </g>
 
           {/* Selection Overlays */}
@@ -186,16 +278,14 @@ export const EditorCanvas = () => {
                 strokeWidth="1"
                 strokeDasharray="4"
               />
-              {/* Real Node Editor */}
-              {l.type === 'path' && editingSegments && editingSegments.id === l.id && (
+              {/* Node Editor */}
+              {l.type === 'path' && editingSegments && editingSegments.id === l.id && activeTool === 'select' && (
                 <g transform={`translate(${l.x}, ${l.y}) rotate(${l.rotation})`}>
                   {editingSegments.segments.map((seg, idx) => (
                     <g key={idx}>
-                      {/* Lines to handles */}
                       <line x1={seg.point.x} y1={seg.point.y} x2={seg.point.x + seg.handleIn.x} y2={seg.point.y + seg.handleIn.y} stroke="#3b82f6" strokeWidth="1" />
                       <line x1={seg.point.x} y1={seg.point.y} x2={seg.point.x + seg.handleOut.x} y2={seg.point.y + seg.handleOut.y} stroke="#3b82f6" strokeWidth="1" />
 
-                      {/* Anchor Point */}
                       <motion.circle
                         cx={seg.point.x}
                         cy={seg.point.y}
@@ -207,7 +297,6 @@ export const EditorCanvas = () => {
                         style={{ cursor: 'crosshair' }}
                       />
 
-                      {/* Handle In */}
                       <motion.circle
                         cx={seg.point.x + seg.handleIn.x}
                         cy={seg.point.y + seg.handleIn.y}
@@ -220,7 +309,6 @@ export const EditorCanvas = () => {
                         style={{ cursor: 'nwse-resize' }}
                       />
 
-                      {/* Handle Out */}
                       <motion.circle
                         cx={seg.point.x + seg.handleOut.x}
                         cy={seg.point.y + seg.handleOut.y}
@@ -239,11 +327,6 @@ export const EditorCanvas = () => {
             </React.Fragment>
           ))}
         </svg>
-
-        {/* Alignment Guides Placeholder */}
-        <div className="absolute inset-0 pointer-events-none">
-            {/* Logic for smart guides will render lines here */}
-        </div>
       </div>
     </div>
   );
